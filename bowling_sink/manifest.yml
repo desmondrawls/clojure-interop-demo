@@ -1,0 +1,5 @@
+---
+applications:
+- name: bowling-sink
+  buildpack: https://github.com/cloudfoundry/java-buildpack.git
+  path: target/bowling_sink-0.0.1-SNAPSHOT.jar

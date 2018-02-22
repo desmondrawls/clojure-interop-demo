@@ -1,0 +1,5 @@
+---
+applications:
+- name: hypeman
+  buildpack: https://github.com/cloudfoundry/java-buildpack.git
+  path: target/hypeman-0.0.1-SNAPSHOT.jar

@@ -4,7 +4,7 @@
 
 (defn assertEquals [expected actual name]
   (if (= expected actual)
-    (println "SUCESS: " name)
+    (println "SUCCESS: " name)
     (println "FAILED: " name "\n\texpected " actual " to equal " expected)))
 
 (defn testQuery []

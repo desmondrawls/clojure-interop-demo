@@ -1,6 +1,5 @@
 package bowling
 
-import com.rap.battle.findrappers.RapperFinder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import recording_studio.bowling.identifier

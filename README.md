@@ -1,7 +1,7 @@
 ### Run configurations
 
     $ cd hypeman
-    $ mvn clean spring-boot:run -Dposers
+    $ mvn clean spring-boot:run -Dposers //currently no config file for this
     $ mvn clean spring-boot:run -Dpersistent
 
 ### Environment variables

@@ -1,9 +1,5 @@
-package com.rap.battle
+package bowling
 
-import bowling.BowlingController
-import bowling.GameIdentifier
-import bowling.GameSaver
-import bowling.identifyGameUseCase
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.SpringBootConfiguration
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
@@ -12,7 +8,7 @@ import org.springframework.context.annotation.ComponentScan
 
 @SpringBootConfiguration
 @EnableAutoConfiguration
-@ComponentScan(basePackages = arrayOf("com.rap", "com.rap.battle", "bowling"))
+@ComponentScan(basePackages = arrayOf("bowling"))
 open class MirrorsApplication {
 
     @Bean

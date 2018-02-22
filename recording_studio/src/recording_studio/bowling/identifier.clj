@@ -4,8 +4,7 @@
         :reload)
   (require [recording_studio.db.connection :as connection]
            [datomic.api :as d])
-  (:import (bowling Game GameIdentifier)
-           (com.rap.battle Success Failure CommonErrors)))
+  (:import (bowling Game GameIdentifier Success Failure CommonErrors)))
 
 (def by-identifier '[:find ?pins ?frame-index ?identifier
                      :in $ ?identifier

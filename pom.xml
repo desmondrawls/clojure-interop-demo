@@ -11,7 +11,7 @@
         <module>posers</module>
         <module>recording_studio</module>
         <module>recording_studio_beans</module>
-        <module>hypeman</module>
+        <module>bowling_modulith</module>
         <module>bowling_transform</module>
         <module>bowling_source</module>
         <module>bowling_sink</module>

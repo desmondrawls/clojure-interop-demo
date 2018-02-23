@@ -14,7 +14,7 @@ fun scoreGame(game: Game): Outcome<Int, BowlingFailures> {
                     { errors -> Failure<Int, BowlingFailures>(errors) })
 }
 
-fun scoreFromFrame(game: Game, frame: Int, roll: Int, score: Int): Outcome<Int, BowlingFailures> {
+private fun scoreFromFrame(game: Game, frame: Int, roll: Int, score: Int): Outcome<Int, BowlingFailures> {
     fun nextFrame(): Int = frame + 1
 
     fun nextRoll(): Int = roll + 1

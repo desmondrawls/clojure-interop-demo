@@ -1,0 +1,9 @@
+apiVersion: projectriff.io/v1
+kind: Function
+metadata:
+  name: bowler
+spec:
+  protocol: grpc
+  input: bowlers
+  container:
+    image: nhcnessienyc/bowler:0.0.1

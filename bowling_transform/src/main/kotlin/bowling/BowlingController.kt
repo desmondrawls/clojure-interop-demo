@@ -2,6 +2,7 @@ package bowling
 
 import org.springframework.web.bind.annotation.*
 import java.util.*
+import recording_studio.bowling.scorer
 
 @RestController
 class BowlingController {
@@ -14,7 +15,7 @@ class BowlingController {
     @ResponseBody
     fun score(@PathVariable identifier: String,
               @RequestParam rolls: List<Int>) =
-            scoreGame(Game(rolls, UUID.fromString(identifier)))
+            scorer.score("Arthur Fonzarelli")
 
     @GetMapping("/games/{identifier}/rolls/new")
     @ResponseBody

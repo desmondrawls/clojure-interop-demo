@@ -1,0 +1,9 @@
+apiVersion: projectriff.io/v1
+kind: Function
+metadata:
+  name: babyzilla
+spec:
+  protocol: grpc
+  input: babyzillas
+  container:
+    image: nhcnessienyc/babyzilla:0.0.1

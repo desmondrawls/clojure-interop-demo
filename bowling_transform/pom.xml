@@ -26,6 +26,11 @@
             <artifactId>producer</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>recording_studio</groupId>
+            <artifactId>recording_studio</artifactId>
+            <version>0.1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>

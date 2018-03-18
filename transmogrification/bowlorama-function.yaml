@@ -1,9 +1,9 @@
 apiVersion: projectriff.io/v1
 kind: Function
 metadata:
-  name: transmogrification
+  name: bowlorama
 spec:
   protocol: grpc
   input: bowls
   container:
-    image: nhcnessienyc/transmogrification:0.0.1
+    image: nhcnessienyc/bowlorama:0.0.1

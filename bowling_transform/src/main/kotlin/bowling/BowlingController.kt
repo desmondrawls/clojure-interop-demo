@@ -2,7 +2,7 @@ package bowling
 
 import org.springframework.web.bind.annotation.*
 import java.util.*
-import recording_studio.bowling.scorer
+import transform.bowling.scorer
 
 @RestController
 class BowlingController {

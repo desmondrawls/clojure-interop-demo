@@ -10,7 +10,9 @@
         <module>producer</module>
         <module>posers</module>
         <module>recording_studio</module>
+        <module>recording_studio_beans</module>
         <module>transmogrification</module>
+        <module>transform</module>
         <module>bowling_modulith</module>
         <module>bowling_transform</module>
         <module>bowling_source</module>

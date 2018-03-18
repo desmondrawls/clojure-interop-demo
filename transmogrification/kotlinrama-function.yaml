@@ -1,9 +1,9 @@
 apiVersion: projectriff.io/v1
 kind: Function
 metadata:
-  name: bowler
+  name: kotlinrama
 spec:
   protocol: grpc
-  input: bowlers
+  input: kotlins
   container:
-    image: nhcnessienyc/bowler:0.0.1
+    image: nhcnessienyc/kotlinrama:0.0.1

@@ -1,6 +1,6 @@
 apiVersion : projectriff.io/v1
 kind: Topic
 metadata:	
-  name: babyzillas
+  name: zillas
 spec:
   partitions: 1

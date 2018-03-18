@@ -1,6 +1,6 @@
 apiVersion : projectriff.io/v1
 kind: Topic
 metadata:	
-  name: bowlers
+  name: kotlins
 spec:
   partitions: 1

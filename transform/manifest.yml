@@ -1,0 +1,6 @@
+---
+applications:
+- name: recording_studio_setup
+  buildpack: https://github.com/cloudfoundry/java-buildpack.git
+  path: target/recording_studio-0.1.0-SNAPSHOT-standalone.jar
+  no-route: true

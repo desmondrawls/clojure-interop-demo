@@ -1,9 +1,0 @@
-apiVersion: projectriff.io/v1
-kind: Function
-metadata:
-  name: godzilla
-spec:
-  protocol: grpc
-  input: gods
-  container:
-    image: nhcnessienyc/godzilla:0.0.1

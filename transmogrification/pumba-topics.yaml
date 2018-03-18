@@ -1,6 +1,6 @@
 apiVersion : projectriff.io/v1
 kind: Topic
 metadata:	
-  name: zillas
+  name: pumbas
 spec:
   partitions: 1

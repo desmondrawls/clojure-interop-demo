@@ -1,9 +1,9 @@
 apiVersion: projectriff.io/v1
 kind: Function
 metadata:
-  name: bowlorama
+  name: pumba
 spec:
   protocol: grpc
-  input: bowls
+  input: pumbas
   container:
-    image: nhcnessienyc/bowlorama:0.0.1
+    image: nhcnessienyc/pumba:0.0.1

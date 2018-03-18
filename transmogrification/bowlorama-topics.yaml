@@ -1,6 +1,0 @@
-apiVersion : projectriff.io/v1
-kind: Topic
-metadata:	
-  name: bowls
-spec:
-  partitions: 1

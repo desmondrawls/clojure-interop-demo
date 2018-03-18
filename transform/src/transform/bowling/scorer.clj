@@ -1,12 +1,12 @@
 (ns transform.bowling.scorer
   (:gen-class :methods [^:static [score [String] String]])
   (:use [clojure.core]
-        :reload))
-
+        :reload)
+  (:import (bowling Success)))
 
 (defn -score
   [name]
-  (str "REALLY GOOD GAME YALL: " name))
+  (Success. 99))
 
 (defn bowl
   [& args]

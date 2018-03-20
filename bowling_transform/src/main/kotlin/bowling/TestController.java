@@ -11,6 +11,6 @@ public class TestController {
     @GetMapping("/test")
     @ResponseBody
     public String test(){
-        return scorer.score("the fonz");
+        return scorer.show_score("the fonz");
     }
 }

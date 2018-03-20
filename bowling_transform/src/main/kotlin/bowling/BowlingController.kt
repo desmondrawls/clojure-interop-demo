@@ -15,7 +15,7 @@ class BowlingController {
     @ResponseBody
     fun score(@PathVariable identifier: String,
               @RequestParam rolls: List<Int>) =
-            scorer.score("Arthur Fonzarelli")
+            scorer.show_score("Arthur Fonzarelli")
 
     @GetMapping("/games/{identifier}/rolls/new")
     @ResponseBody

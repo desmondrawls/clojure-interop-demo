@@ -4,8 +4,10 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.8.0"]
+                 [org.clojure/data.json "0.2.6"]
                  [com.rap.battle/producer "0.0.1-SNAPSHOT"]]
   :plugins [[lein-exec "0.3.6"]]
   :main ^:skip-aot transform.bowling.scorer
+  :aliases {"test" ["exec" "-ep" "(use 'transform.test) (run-tests)"]}
   :aot :all
   :profiles {:uberjar {:aot :all}})

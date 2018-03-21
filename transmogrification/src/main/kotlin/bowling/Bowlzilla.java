@@ -1,15 +1,20 @@
 package bowling;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Function;
 
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
 import transform.bowling.scorer;
 
 public class Bowlzilla implements Function<String, String> {
 
-	public String apply(String name) {
+	public String apply(String body) {
 		try{
-			return scorer.show_score(Arrays.asList(1, 2, 3, 6));
+			DocumentContext documentContext = JsonPath.parse(body);
+			List<Integer> rolls = documentContext.read("$.rolls[*]");
+			return scorer.show_score(rolls);
 		} catch (Exception e) {
 			return e.getMessage();
 		}

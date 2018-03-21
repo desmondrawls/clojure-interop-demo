@@ -1,0 +1,9 @@
+apiVersion: projectriff.io/v1
+kind: Function
+metadata:
+  name: light
+spec:
+  protocol: grpc
+  input: sunrays
+  container:
+    image: nhcnessienyc/light:0.0.1

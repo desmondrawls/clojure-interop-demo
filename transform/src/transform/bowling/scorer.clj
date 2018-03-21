@@ -1,5 +1,6 @@
 (ns transform.bowling.scorer
-  (:gen-class :methods [^:static [show_score [String] String]])
+  (:gen-class :methods [^:static [score_game [Object] String]
+                        ^:static [show_score [Object] String]])
   (:use [clojure.core]
         :reload)
   (require [transform.bowling.shower :as shower]
@@ -8,10 +9,6 @@
 (defn score
   [name]
   [{:a "yes" :b "no"}])
-
-(defn -show_score
-  [name]
-  (shower/show (score name)))
 
 (defn bowl
   [& args]
@@ -52,3 +49,10 @@
   [game]
   (score-from-frame game 0 0 0))
 
+(defn -score_game
+  [rolls]
+  (score-game {:rolls rolls :id "the fonz"}))
+
+(defn -show_score
+  [rolls]
+  (shower/show-json (score-game {:rolls rolls :id "da fonz"})))

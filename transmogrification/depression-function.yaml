@@ -1,9 +1,9 @@
 apiVersion: projectriff.io/v1
 kind: Function
 metadata:
-  name: pumba
+  name: depression
 spec:
   protocol: grpc
-  input: pumbas
+  input: emptiness
   container:
-    image: nhcnessienyc/pumba:0.0.1
+    image: nhcnessienyc/depression:0.0.1

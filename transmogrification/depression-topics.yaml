@@ -1,6 +1,6 @@
 apiVersion : projectriff.io/v1
 kind: Topic
 metadata:	
-  name: kotlins
+  name: emptiness
 spec:
   partitions: 1

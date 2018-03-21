@@ -1,9 +1,0 @@
-apiVersion: projectriff.io/v1
-kind: Function
-metadata:
-  name: kotlinrama
-spec:
-  protocol: grpc
-  input: kotlins
-  container:
-    image: nhcnessienyc/kotlinrama:0.0.1

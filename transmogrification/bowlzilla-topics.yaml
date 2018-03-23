@@ -1,6 +1,6 @@
 apiVersion : projectriff.io/v1
 kind: Topic
 metadata:	
-  name: sunrays
+  name: rolls
 spec:
   partitions: 1

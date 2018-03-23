@@ -1,9 +1,0 @@
-apiVersion: projectriff.io/v1
-kind: Function
-metadata:
-  name: timone
-spec:
-  protocol: grpc
-  input: timones
-  container:
-    image: nhcnessienyc/timone:0.0.1

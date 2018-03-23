@@ -1,9 +1,9 @@
 apiVersion: projectriff.io/v1
 kind: Function
 metadata:
-  name: depression
+  name: bowlzilla
 spec:
   protocol: grpc
-  input: emptiness
+  input: rolls
   container:
-    image: nhcnessienyc/depression:0.0.1
+    image: nhcnessienyc/bowlzilla:0.0.1

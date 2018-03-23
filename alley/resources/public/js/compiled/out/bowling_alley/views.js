@@ -29,15 +29,15 @@ return cljs.core.reset_BANG_.call(null,rolls,"");
 return ((function (loading_QMARK_,error_QMARK_,rolls,on_click){
 return (function (){
 return new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div","div",1057191632),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"div.input-group","div.input-group",-2073660476),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"input.form-control","input.form-control",-1123419636),new cljs.core.PersistentArrayMap(null, 3, [new cljs.core.Keyword(null,"type","type",1174270348),"text",new cljs.core.Keyword(null,"placeholder","placeholder",-104873083),"Enter Rolls",new cljs.core.Keyword(null,"on-change","on-change",-732046149),((function (loading_QMARK_,error_QMARK_,rolls,on_click){
-return (function (p1__24334_SHARP_){
-return cljs.core.reset_BANG_.call(null,rolls,p1__24334_SHARP_.target.value);
+return (function (p1__32436_SHARP_){
+return cljs.core.reset_BANG_.call(null,rolls,p1__32436_SHARP_.target.value);
 });})(loading_QMARK_,error_QMARK_,rolls,on_click))
 ], null)], null),new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"span.input-group-btn","span.input-group-btn",358441272),new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"button.btn.btn-default","button.btn.btn-default",-991846011),new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null,"type","type",1174270348),"button",new cljs.core.Keyword(null,"on-click","on-click",1632826543),((function (loading_QMARK_,error_QMARK_,rolls,on_click){
-return (function (p1__24335_SHARP_){
+return (function (p1__32437_SHARP_){
 if(cljs.core.truth_(cljs.core.deref.call(null,loading_QMARK_))){
 return null;
 } else {
-return on_click.call(null,p1__24335_SHARP_);
+return on_click.call(null,p1__32437_SHARP_);
 }
 });})(loading_QMARK_,error_QMARK_,rolls,on_click))
 ], null),"Score"], null)], null)], null),(cljs.core.truth_(cljs.core.deref.call(null,error_QMARK_))?new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null,"p.error-text.text-danger","p.error-text.text-danger",-937825642),"\u00AF\\_(\u30C4)_/\u00AF  Unknown error. Do you know what you're doing?"], null):null)], null);
@@ -94,4 +94,4 @@ return new cljs.core.PersistentVector(null, 4, 5, cljs.core.PersistentVector.EMP
 ;})(active_panel))
 });
 
-//# sourceMappingURL=views.js.map?rel=1521786010226
+//# sourceMappingURL=views.js.map?rel=1521787223365

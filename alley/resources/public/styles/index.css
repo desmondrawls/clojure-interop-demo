@@ -6,8 +6,10 @@
     z-index: 999;
 }
 .topbar {
-    padding: 20px 0;
-    background: #FFDC00;
+    padding: 20px 0 400px 0;
+    background-image: url("disco-bowl.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .user-details {
@@ -22,7 +24,7 @@
 }
 
 .main-content {
-    margin-top: 20px;
+    margin-top: 400px;
 }
 
 .error-text {

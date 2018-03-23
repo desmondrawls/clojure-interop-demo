@@ -19,4 +19,4 @@ return bowling_alley.core.mount_root.call(null);
 });
 goog.exportSymbol('bowling_alley.core.init', bowling_alley.core.init);
 
-//# sourceMappingURL=core.js.map?rel=1521786010296
+//# sourceMappingURL=core.js.map?rel=1521787223422

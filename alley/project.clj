@@ -1,4 +1,4 @@
-(defproject github-profile "0.1.0-SNAPSHOT"
+(defproject bowling-alley "0.1.0-SNAPSHOT"
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.clojure/clojurescript "1.7.145"]
                  [reagent "0.5.1"]
@@ -13,8 +13,8 @@
   :figwheel {:css-dirs ["resources/public/css"]}
   :cljsbuild {:builds [{:id "dev"
                         :source-paths ["src/cljs"]
-                        :figwheel {:on-jsload "github-profile.core/mount-root"}
-                        :compiler {:main github-profile.core
+                        :figwheel {:on-jsload "bowling-alley.core/mount-root"}
+                        :compiler {:main bowling-alley.core
                                    :output-to "resources/public/js/compiled/app.js"
                                    :output-dir "resources/public/js/compiled/out"
                                    :asset-path "js/compiled/out"
@@ -28,7 +28,7 @@
                                    :warnings {:single-segment-namespace false}}}
                        {:id "min"
                         :source-paths ["src/cljs"]
-                        :compiler {:main github-profile.core
+                        :compiler {:main bowling-alley.core
                                    :output-to "resources/public/js/compiled/app.js"
                                    :optimizations :advanced
                                    :pretty-print false}}]})

@@ -1,2 +1,0 @@
-;; Analyzed by ClojureScript 1.7.145
-{:use-macros {reaction reagent.ratom}, :excludes #{}, :name github-profile.subs, :imports nil, :requires {re-frame re-frame.core, re-frame.core re-frame.core}, :uses nil, :require-macros {reagent.ratom reagent.ratom}, :cljs.analyzer/constants {:seen #{:game :name :loading? :repos :github-id :score :active-panel :user-profile :rolls :error :error? :user-repos :user :profile}, :order [:name :active-panel :github-id :user :loading? :error? :error :user-profile :profile :user-repos :repos :rolls :game :score]}, :doc nil}

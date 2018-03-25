@@ -4,9 +4,7 @@
   {
    :loading? false
    :error false
-   :score 999
-   :rolls "rolls"
-   :name "github profile"
+   :games {"awesome" {:rolls "1,2,3" :score "maybe 6?"}}
    :user {
           :profile {}
           :repos []

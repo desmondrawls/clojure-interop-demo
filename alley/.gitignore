@@ -2,3 +2,4 @@
 /target
 /*-init.clj
 .DS_Store
+/resources/public/js/compiled

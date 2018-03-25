@@ -3,14 +3,9 @@
   (:require [re-frame.core :as re-frame]))
 
 (re-frame/register-sub
-  :rolls
+  :games
   (fn [db]
-    (reaction (:rolls @db))))
-
-(re-frame/register-sub
-  :score
-  (fn [db]
-    (reaction (:score @db))))
+    (reaction (:games @db))))
 
 (re-frame/register-sub
  :name

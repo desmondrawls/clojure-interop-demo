@@ -6,15 +6,6 @@ var url = require('url');
 
 var proxy = httpProxy.createProxyServer()
 
-proxy.on('end', function(req, res) {
-  console.log("Request:")
-  console.log(req.headers)
-  console.log(req.body)
-  console.log("Response:")
-  console.log(res.headers)
-  console.log(res.body)
-})
-
 var router = http.createServer(
   function(req, res) {
     console.log("Received request on proxy server")

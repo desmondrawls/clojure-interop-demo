@@ -15,13 +15,17 @@
   (let [loading? (re-frame/subscribe [:loading?])
         error? (re-frame/subscribe [:error?])
         rolls (reagent/atom "")
+        name (reagent/atom "")
         on-click (fn [_]
-                   (when-not (empty? @rolls)
-                     (re-frame/dispatch [:set-rolls @rolls])
+                   (when-not (or (empty? @rolls) (empty? @name))
+                     (re-frame/dispatch [:set-rolls @rolls @name])
                      (reset! rolls "")))]
     (fn []
       [:div
        [:div.input-group
+        [:input.form-control {:type "text"
+                              :placeholder "Enter Name"
+                              :on-change #(reset! name (-> % .-target .-value))}]
         [:input.form-control {:type "text"
                               :placeholder "Enter Rolls"
                               :on-change #(reset! rolls (-> % .-target .-value))}]
@@ -33,17 +37,16 @@
        (when @error?
          [:p.error-text.text-danger "¯\\_(ツ)_/¯  Unknown error. Do you know what you're doing?"])])))
 
-(defn rolls
+(defn games
   []
   (fn []
-    (let [rolls (re-frame/subscribe [:rolls])]
-       [:h3.text-center @rolls])))
-
-(defn score
-  []
-  (fn []
-    (let [score (re-frame/subscribe [:score])]
-       [:h5.text-center @score])))
+    (let [games (re-frame/subscribe [:games])]
+      [:div
+       (map #(identity [:div
+                        [:h2.text-center (first %)]
+                        [:h3.text-center (str "rolls " (:rolls (second %)))]
+                        [:h5.text-center (str "score " (:score (second %)))]])
+         @games)])))
 
 ;; home
 (defn home-panel []
@@ -80,6 +83,5 @@
        [loading-throbber]
        (panels @active-panel)
        [:div
-        [rolls]
-        [score]]
+        [games]]
        ])))

@@ -37,16 +37,29 @@
        (when @error?
          [:p.error-text.text-danger "¯\\_(ツ)_/¯  Unknown error. Do you know what you're doing?"])])))
 
+(defn game
+  [game]
+  (let [name (first game)
+        rolls (:rolls (second game))
+        score (:score (second game))
+        on-click (fn [_]
+                   (when-not (or (empty? rolls) (empty? name) (empty? score))
+                     (re-frame/dispatch [:save-game name rolls])))]
+    [:div
+     [:h2.text-center name]
+     [:span.input-group-btn
+      [:button.btn.btn-default {:type "button"
+                                :on-click #(on-click %)}
+       "Save"]]
+     [:h3.text-center (str "rolls " rolls)]
+     [:h5.text-center (str "score " score)]]))
+
 (defn games
   []
   (fn []
     (let [games (re-frame/subscribe [:games])]
       [:div
-       (map #(identity [:div
-                        [:h2.text-center (first %)]
-                        [:h3.text-center (str "rolls " (:rolls (second %)))]
-                        [:h5.text-center (str "score " (:score (second %)))]])
-         @games)])))
+       (map game @games)])))
 
 ;; home
 (defn home-panel []

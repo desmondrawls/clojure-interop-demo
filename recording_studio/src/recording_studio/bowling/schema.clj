@@ -10,6 +10,10 @@
                       :db/cardinality :db.cardinality/one
                       :db/unique :db.unique/identity
                       :db/doc "The unique identifier of the game"}
+                     {:db/ident :game/name
+                      :db/valueType :db.type/string
+                      :db/cardinality :db.cardinality/one
+                      :db/doc "The name of the game"}
                      {:db/ident :roll/game
                       :db/valueType :db.type/ref
                       :db/cardinality :db.cardinality/one

@@ -27,9 +27,9 @@ class RollTest {
     @Test
     fun valid() {
         val testIdentifier = UUID.randomUUID()
-        val expectedRoll: Outcome<Game, BowlingFailures> = Success(Game(listOf(1, 5), testIdentifier))
+        val expectedRoll: Outcome<Game, BowlingFailures> = Success(Game(listOf(1, 5), "boring", testIdentifier))
 
-        val roll = roll(Game(listOf(1), testIdentifier), 5)
+        val roll = roll(Game(listOf(1), "boring", testIdentifier), 5)
 
         assert.that(roll, equalTo(expectedRoll))
     }

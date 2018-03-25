@@ -6,12 +6,13 @@
            [datomic.api :as d])
   (:import (bowling Game GameIdentifier Success Failure CommonErrors)))
 
-(def by-identifier '[:find ?pins ?frame-index ?identifier
+(def by-identifier '[:find ?pins ?frame-index ?name
                      :in $ ?identifier
                      :where
                      [?n :roll/pins ?pins]
                      [?n :roll/frame-index ?frame-index]
                      [?n :roll/game ?g]
+                     [?g :game/name ?name]
                      [?g :game/identifier ?identifier]])
 
 (defn identify-game
@@ -28,6 +29,6 @@
             (as-> game (sort-by second game))
             (as-> sorted_game (map first sorted_game))
             (as-> sorted_rolls (map #(.intValue %) sorted_rolls))
-            (Game. identifier)
+            (Game. (last game) identifier)
             Success.)
           (Failure. '(CommonErrors/DEAD_END)))))))

@@ -10,7 +10,10 @@ var router = http.createServer(
   function(req, res) {
     console.log("Received request on proxy server")
     var target = url.parse(req.url)
-    if(target.pathname.startsWith('/requests/rolls')) {
+    if(target.pathname.startsWith('/games')) {
+      console.log("Forwading request to source/sink")
+      proxy.web(req, res, {target: 'http://localhost:8080'})
+    } else if(target.pathname.startsWith('/requests/rolls')) {
       console.log("Forwarding request to scoring function")
       proxy.web(req, res, {target: 'http://35.193.4.148'})
     } else {

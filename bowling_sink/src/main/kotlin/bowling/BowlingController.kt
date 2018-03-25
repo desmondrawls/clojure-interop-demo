@@ -15,8 +15,11 @@ class BowlingController(val gameSaver: GameSaver) {
     @ResponseBody
     fun save(@RequestBody inputStream: String) {
         val document: DocumentContext = JsonPath.parse(inputStream)
-        val identifier: String = document.read("$.identifier")
+        val name: String = document.read("$.name")
         val rolls: List<Int> = document.read("$.rolls")
-        gameSaver.save(Game(rolls, UUID.fromString(identifier)))
+        println("\nSAVING " + name + " - " + rolls.toString())
+        println("\nSAVING " + name + " # " + rolls.toString())
+        println("\nSAVING " + name + " * " + rolls.toString())
+        gameSaver.save(Game(rolls, name))
     }
 }

@@ -12,7 +12,7 @@ class IdentifyGameTest {
 
         val outcome = (identifyGameUseCase(gameRepository))(stubIdentifier())
 
-        val expectedGame = Game(listOf(1,2,3), stubIdentifier())
+        val expectedGame = Game(listOf(1,2,3), "showdown of the century", stubIdentifier())
         assert.that(Success(expectedGame), equalTo(outcome))
     }
 
@@ -22,7 +22,7 @@ class IdentifyGameTest {
 
         val outcome = (identifyGameUseCase(temporarilyFailingGameRepository))(stubIdentifier())
 
-        val expectedGame = Game(listOf(1,2,3), stubIdentifier())
+        val expectedGame = Game(listOf(1,2,3), "showdown of the century", stubIdentifier())
         assert.that(Success(expectedGame), equalTo(outcome))
     }
 

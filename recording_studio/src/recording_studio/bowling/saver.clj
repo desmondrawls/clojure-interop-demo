@@ -11,12 +11,14 @@
 (defn save-game [game]
   (let [rolls (.getRolls game)
         identifier (.getIdentifier game)
+        name (.getName game)
         temporary-game-id "temporary-game-id"
         game-datom {:db/id temporary-game-id
+                    :game/name name
                     :game/identifier identifier}
         roll-datoms (map-indexed (fn [frame-index pins] {:roll/game temporary-game-id
-                                                         :roll/pins (Long. pins)
-                                                         :roll/frame-index (Long. frame-index)}) rolls)]
+                                                         :roll/pins pins
+                                                         :roll/frame-index frame-index}) rolls)]
     (d/transact (connection/connect) (conj roll-datoms game-datom))))
 
 (defn -game_saver []

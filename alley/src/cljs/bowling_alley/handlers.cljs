@@ -5,6 +5,10 @@
 
 (enable-console-print!)
 
+(defn parse-rolls
+  [rolls]
+  (map js/parseInt (clojure.string/split rolls #",")))
+
 (re-frame/register-handler
  :initialize-db
  (fn  [_ _]
@@ -14,6 +18,27 @@
  :set-active-panel
  (fn [db [_ active-panel]]
    (assoc db :active-panel active-panel)))
+
+(re-frame/register-handler
+  :save-game
+  (fn [db [_ name rolls]]
+    (println "save game: " name " - " rolls)
+    (ajax.core/POST
+      "http://localhost:8000/games"
+      {:params {:rolls (parse-rolls rolls) :name name}
+       :format :json
+       :headers {"Content-Type" "application/json"
+                 "Accept" "application/json"}
+       :handler       #(re-frame/dispatch [:stop-loading])
+       :error-handler #(re-frame/dispatch [:bad-response %1])})
+    (-> db
+      (assoc :loading? true)
+      (assoc :error false))))
+
+(re-frame/register-handler
+  :stop-loading
+  (fn [db [_]]
+    (-> db (assoc :loading? false))))
 
 (re-frame/register-handler
   :set-rolls
@@ -26,7 +51,7 @@
   (fn [db [_ rolls name]]
     (ajax.core/POST
       "http://localhost:8000/requests/rolls"
-      {:params {:rolls (map js/parseInt (clojure.string/split rolls #","))}
+      {:params {:rolls (parse-rolls rolls)}
        :format :json
        :headers {"Content-Type" "text/plain"}
        :handler       #(re-frame/dispatch [:process-scoring-response %1 name])

@@ -22,21 +22,24 @@ class BowlingController(val identifyGame: (identifier: UUID) -> Outcome<Game, Co
     @ResponseBody
     fun save(@RequestBody inputStream: String) {
         val document: DocumentContext = JsonPath.parse(inputStream)
-        val identifier: String = document.read("$.identifier")
+        val name: String = document.read("$.name")
         val rolls: List<Int> = document.read("$.rolls")
-        gameSaver.save(Game(rolls, UUID.fromString(identifier)))
+        println("saving " + name + " - " + rolls.toString())
+        gameSaver.save(Game(rolls, name))
     }
 
     @GetMapping("games/{identifier}/score")
     @ResponseBody
     fun score(@PathVariable identifier: String,
+              @RequestParam name: String,
               @RequestParam rolls: List<Int>) =
-            scoreGame(Game(rolls, UUID.fromString(identifier)))
+            scoreGame(Game(rolls, name, UUID.fromString(identifier)))
 
     @GetMapping("/games/{identifier}/rolls/new")
     @ResponseBody
     fun new(@PathVariable identifier: UUID,
+            @RequestParam name: String,
             @RequestParam rolls: List<Int>,
             @RequestParam(value = "pins", required = false) pins: Int?) =
-            roll(Game(rolls, identifier), pins)
+            roll(Game(rolls, name, identifier), pins)
 }

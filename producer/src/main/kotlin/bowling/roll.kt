@@ -11,5 +11,5 @@ fun roll(game: Game, pins: Int?): Outcome<Game, BowlingFailures> =
 private fun roll(game: Game, pins: Int = Random().nextInt(10)): Outcome<Game, BowlingFailures> =
    validateRoll(pins)
            .fold({pins ->
-               Success<Game, BowlingFailures>(Game(listOf(game.rolls, listOf(pins)).flatten(), game.identifier))},
+               Success<Game, BowlingFailures>(Game(listOf(game.rolls, listOf(pins)).flatten(), game.name, game.identifier))},
                    {errors -> Failure<Game, BowlingFailures>(errors)})

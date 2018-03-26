@@ -2,6 +2,19 @@
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]))
 
+(defn navbar
+  []
+  (let [on-click (fn [_] (re-frame/dispatch [:fetch-games]))]
+    (fn []
+      [:nav.navbar.navbar-default.mbn
+       [:div.container-fluid]
+       [:div.navbar-header]
+       [:a.navbar-brand {:href= "#"} "The most elaborate bowling kata EVER"]
+       [:div
+        [:ul.nav.navbar-nav
+         [:li.active
+          [:a {:on-click #(on-click %)} "Load games"]]]]])))
+
 
 (defn loading-throbber
   []
@@ -23,12 +36,14 @@
     (fn []
       [:div
        [:div.input-group
-        [:input.form-control {:type "text"
-                              :placeholder "Enter Name"
-                              :on-change #(reset! name (-> % .-target .-value))}]
-        [:input.form-control {:type "text"
-                              :placeholder "Enter Rolls"
-                              :on-change #(reset! rolls (-> % .-target .-value))}]
+        [:div.input-group
+         [:input.form-control {:type "text"
+                               :placeholder "Enter Name"
+                               :on-change #(reset! name (-> % .-target .-value))}]
+         [:span.input-group-addon ""]
+         [:input.form-control {:type "text"
+                               :placeholder "Enter Rolls"
+                               :on-change #(reset! rolls (-> % .-target .-value))}]]
         [:span.input-group-btn
          [:button.btn.btn-default {:type "button"
                                    :on-click #(when-not @loading? (on-click %))}
@@ -36,14 +51,6 @@
          ]]
        (when @error?
          [:p.error-text.text-danger "¯\\_(ツ)_/¯  Unknown error. Do you know what you're doing?"])])))
-
-(defn loader
-  []
-  (let [on-click (fn [_] (re-frame/dispatch [:fetch-games]))]
-    [:span.input-group-btn
-     [:button.btn.btn-default {:type "button"
-                               :on-click #(on-click %)}
-      "Load games"]]))
 
 (defn game
   [game]
@@ -53,22 +60,22 @@
         on-click (fn [_]
                    (println "clicked")
                    (when-not (or (empty? rolls) (empty? name) (nil? score))
-                      (println "not empty")
+                     (println "not empty")
                      (re-frame/dispatch [:save-game name rolls])))]
-    [:div
-     [:h2.text-center name]
+    [:li.flex-content
+     [:h2 name]
      [:span.input-group-btn
       [:button.btn.btn-default {:type "button"
                                 :on-click #(on-click %)}
        "Save"]]
-     [:h3.text-center (str "rolls " (clojure.string/join "," rolls))]
-     [:h5.text-center (str "score " score)]]))
+     [:h3 (str "rolls " (clojure.string/join "," rolls))]
+     [:h5 (str "score " score)]]))
 
 (defn games
   []
   (fn []
     (let [games (re-frame/subscribe [:games])]
-      [:div
+      [:ul.flex-container
        (map game @games)])))
 
 ;; home
@@ -103,9 +110,8 @@
   (let [active-panel (re-frame/subscribe [:active-panel])]
     (fn []
       [:div
+       [navbar]
        [loading-throbber]
        (panels @active-panel)
-       [:div
-        [loader]
-        [games]]
+       [games]
        ])))

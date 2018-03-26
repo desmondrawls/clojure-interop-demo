@@ -8,9 +8,9 @@ class IdentifyGameTest {
 
     @Test
     fun success() {
-        val gameRepository = GameIdentifierStub()
+        val gameIdentifier = GameIdentifierStub()
 
-        val outcome = (identifyGameUseCase(gameRepository))(stubIdentifier())
+        val outcome = (identifyGameUseCase(gameIdentifier))(stubIdentifier())
 
         val expectedGame = Game(listOf(1,2,3), "showdown of the century", stubIdentifier())
         assert.that(Success(expectedGame), equalTo(outcome))
@@ -18,9 +18,9 @@ class IdentifyGameTest {
 
     @Test
     fun retries() {
-        val temporarilyFailingGameRepository = TemporarilyFailingGameIdentifierStub()
+        val temporarilyFailingGameIdentifier = TemporarilyFailingGameIdentifierStub()
 
-        val outcome = (identifyGameUseCase(temporarilyFailingGameRepository))(stubIdentifier())
+        val outcome = (identifyGameUseCase(temporarilyFailingGameIdentifier))(stubIdentifier())
 
         val expectedGame = Game(listOf(1,2,3), "showdown of the century", stubIdentifier())
         assert.that(Success(expectedGame), equalTo(outcome))
@@ -28,9 +28,9 @@ class IdentifyGameTest {
 
     @Test
     fun failure() {
-        val failingGameRepository = FailingGameIdentifierStub()
+        val failingGameIdentifier = FailingGameIdentifierStub()
 
-        val outcome = (identifyGameUseCase(failingGameRepository))(stubIdentifier())
+        val outcome = (identifyGameUseCase(failingGameIdentifier))(stubIdentifier())
 
         val expectedFailure: Outcome<Game, CommonErrors> = Failure(listOf(CommonErrors.BAD_TIMING))
         assert.that(outcome, equalTo(expectedFailure))

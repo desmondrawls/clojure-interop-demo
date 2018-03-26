@@ -12,8 +12,10 @@ import org.springframework.context.annotation.ComponentScan
 open class BowlingApplication {
 
     @Bean
-    open fun bowlingController(gameIdentifier: GameIdentifier): BowlingController =
-        BowlingController(identifyGameUseCase(gameIdentifier))
+    open fun bowlingController(gameIdentifier: GameIdentifier,
+                               gamesFetcher: GamesFetcher): BowlingController =
+        BowlingController(identifyGameUseCase(gameIdentifier),
+                fetchGamesUseCase(gamesFetcher))
 }
 
 fun main(args: Array<String>) {

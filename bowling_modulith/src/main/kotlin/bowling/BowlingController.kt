@@ -7,12 +7,17 @@ import java.util.*
 
 @RestController
 class BowlingController(val identifyGame: (identifier: UUID) -> Outcome<Game, CommonErrors>,
+                        val fetchGames: () -> Outcome<List<Game>, CommonErrors>,
                         val gameSaver: GameSaver) {
 
     @GetMapping("/games/{identifier}")
     @ResponseBody
     fun find(@PathVariable identifier: String) =
             identifyGame(UUID.fromString(identifier))
+
+    @GetMapping("/games")
+    @ResponseBody
+    fun index() = fetchGames()
 
     @GetMapping("/games/new")
     @ResponseBody

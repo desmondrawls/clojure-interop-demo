@@ -29,6 +29,6 @@
             (as-> game (sort-by second game))
             (as-> sorted_game (map first sorted_game))
             (as-> sorted_rolls (map #(.intValue %) sorted_rolls))
-            (Game. (last game) identifier)
+            (Game. (last (first game)) identifier)
             Success.)
           (Failure. '(CommonErrors/DEAD_END)))))))

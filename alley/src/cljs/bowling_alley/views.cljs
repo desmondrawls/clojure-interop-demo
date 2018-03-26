@@ -37,13 +37,23 @@
        (when @error?
          [:p.error-text.text-danger "¯\\_(ツ)_/¯  Unknown error. Do you know what you're doing?"])])))
 
+(defn loader
+  []
+  (let [on-click (fn [_] (re-frame/dispatch [:fetch-games]))]
+    [:span.input-group-btn
+     [:button.btn.btn-default {:type "button"
+                               :on-click #(on-click %)}
+      "Load games"]]))
+
 (defn game
   [game]
   (let [name (first game)
         rolls (:rolls (second game))
         score (:score (second game))
         on-click (fn [_]
-                   (when-not (or (empty? rolls) (empty? name) (empty? score))
+                   (println "clicked")
+                   (when-not (or (empty? rolls) (empty? name) (nil? score))
+                      (println "not empty")
                      (re-frame/dispatch [:save-game name rolls])))]
     [:div
      [:h2.text-center name]
@@ -51,7 +61,7 @@
       [:button.btn.btn-default {:type "button"
                                 :on-click #(on-click %)}
        "Save"]]
-     [:h3.text-center (str "rolls " rolls)]
+     [:h3.text-center (str "rolls " (clojure.string/join "," rolls))]
      [:h5.text-center (str "score " score)]]))
 
 (defn games
@@ -96,5 +106,6 @@
        [loading-throbber]
        (panels @active-panel)
        [:div
+        [loader]
         [games]]
        ])))

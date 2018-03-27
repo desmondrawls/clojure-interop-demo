@@ -8,7 +8,7 @@
   flex-wrap: wrap;
   align-content: flex-start;
   justify-content: flex-start;
-  padding: 0;
+  padding: 0 0 30px 0;
   margin: 0;
   list-style: none;
 }
@@ -59,4 +59,11 @@
 
 .mbn {
     margin-bottom: 0px;
+}
+
+.disco-nav {
+    background-color: #9671dd;
+    border-color: #9671dd;
+    border-radius: 0;
+    color: #caff2b;
 }

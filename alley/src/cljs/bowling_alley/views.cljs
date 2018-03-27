@@ -6,7 +6,7 @@
   []
   (let [on-click (fn [_] (re-frame/dispatch [:fetch-games]))]
     (fn []
-      [:nav.navbar.navbar-default.mbn
+      [:nav.navbar.mbn.disco-nav
        [:div.container-fluid]
        [:div.navbar-header]
        [:a.navbar-brand {:href= "#"} "The most elaborate bowling kata EVER"]
@@ -37,18 +37,18 @@
       [:div
        [:div.input-group
         [:div.input-group
-         [:input.form-control {:type "text"
+         [:div.container
+          [:div.row.justify-content-md-center
+         [:input.form-control.col-lg-3.mr-3 {:type "text"
                                :placeholder "Enter Name"
                                :on-change #(reset! name (-> % .-target .-value))}]
-         [:span.input-group-addon ""]
-         [:input.form-control {:type "text"
+           [:input.form-control.col-lg-6 {:type "text"
                                :placeholder "Enter Rolls"
-                               :on-change #(reset! rolls (-> % .-target .-value))}]]
-        [:span.input-group-btn
-         [:button.btn.btn-default {:type "button"
-                                   :on-click #(when-not @loading? (on-click %))}
-          "Score"]
-         ]]
+                               :on-change #(reset! rolls (-> % .-target .-value))}]
+         [:span.input-group-btn.col-lg-2
+          [:button.btn.btn-default {:type "button"
+                                    :on-click #(when-not @loading? (on-click %))}
+           "Score"]]]]]]
        (when @error?
          [:p.error-text.text-danger "¯\\_(ツ)_/¯  Unknown error. Do you know what you're doing?"])])))
 
@@ -85,8 +85,8 @@
       [:div
        [:div.topbar
         [:div.container
-         [:div.row
-          [:div.col-lg-6.col-lg-offset-3
+         [:div.row.justify-content-md-center
+          [:div.col-lg-6
            [rolls-input]]]]]])))
 
 

@@ -10,11 +10,14 @@ var router = http.createServer(
   function(req, res) {
     console.log("Received request on proxy server")
     var target = url.parse(req.url)
-    if(target.pathname.startsWith('/source/games')) {
-      console.log("Forwading request to source")
+    if(target.pathname.endsWith('/rolls/new')) {
+      console.log("Forwarding request to transform")
+      proxy.web(req, res, {target: 'http://localhost:8083'})
+    } else if(target.pathname.startsWith('/source/games')) {
+      console.log("Forwarding request to source")
       proxy.web(req, res, {target: 'http://localhost:8081'})
     } else if(target.pathname.startsWith('/games')) {
-      console.log("Forwading request to sink")
+      console.log("Forwarding request to sink")
       proxy.web(req, res, {target: 'http://localhost:8082'})
     } else if(target.pathname.startsWith('/requests/rolls')) {
       console.log("Forwarding request to scoring function")

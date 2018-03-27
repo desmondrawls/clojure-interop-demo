@@ -19,9 +19,9 @@ class BowlingController {
 
     @GetMapping("/games/{identifier}/rolls/new")
     @ResponseBody
-    fun new(@PathVariable identifier: UUID,
+    fun new(@PathVariable identifier: String,
             @RequestParam name: String,
             @RequestParam rolls: List<Int>,
             @RequestParam(value = "pins", required = false) pins: Int?) =
-            roll(Game(rolls, name, identifier), pins)
+            roll(Game(rolls, name, (UUID.fromString(identifier))), pins)
 }

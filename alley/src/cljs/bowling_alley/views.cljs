@@ -2,6 +2,10 @@
   (:require [re-frame.core :as re-frame]
             [reagent.core :as reagent]))
 
+(defn parse-rolls
+  [rolls]
+  (map js/parseInt (clojure.string/split rolls #",")))
+
 (defn navbar
   []
   (let [on-click (fn [_] (re-frame/dispatch [:fetch-games]))]
@@ -14,7 +18,6 @@
         [:ul.nav.navbar-nav
          [:li.active
           [:a {:on-click #(on-click %)} "Load games"]]]]])))
-
 
 (defn loading-throbber
   []
@@ -31,7 +34,7 @@
         name (reagent/atom "")
         on-click (fn [_]
                    (when-not (or (empty? @rolls) (empty? @name))
-                     (re-frame/dispatch [:set-rolls @rolls @name])
+                     (re-frame/dispatch [:set-rolls (parse-rolls @rolls) @name (random-uuid)])
                      (reset! rolls "")))]
     (fn []
       [:div
@@ -57,17 +60,20 @@
   (let [name (first game)
         rolls (:rolls (second game))
         score (:score (second game))
-        on-click (fn [_]
-                   (println "clicked")
-                   (when-not (or (empty? rolls) (empty? name) (nil? score))
-                     (println "not empty")
-                     (re-frame/dispatch [:save-game name rolls])))]
+        identifier (:identifier (second game))
+        valid? (not (or (empty? rolls) (empty? identifier) (empty? name) (nil? score)))
+        on-save (fn [_] (when valid? (re-frame/dispatch [:save-game rolls name identifier])))
+        on-roll (fn [_] (when valid? (re-frame/dispatch [:roll rolls name identifier])))]
     [:li.flex-content
      [:h2 name]
-     [:span.input-group-btn
+     [:span.input-group-btn.mr-1
       [:button.btn.btn-default {:type "button"
-                                :on-click #(on-click %)}
+                                :on-click #(on-save %)}
        "Save"]]
+     [:span.input-group-btn.ml-1
+      [:button.btn.btn-default {:type "button"
+                                :on-click #(on-roll %)}
+       "Roll"]]
      [:h3 (str "rolls " (clojure.string/join "," rolls))]
      [:h5 (str "score " score)]]))
 

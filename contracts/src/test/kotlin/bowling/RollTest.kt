@@ -36,12 +36,24 @@ class RollTest {
 
     @Test
     fun random() {
-        val roll = roll(Game(listOf(1)), null)
+        val roll = roll(Game(listOf(1,2)), null)
 
         assert.that(roll, isSuccess())
-        assert.that(roll, hasSuccessValue({ value -> value.rolls.size == 2}))
+        assert.that(roll, hasSuccessValue({ value -> value.rolls.size == 3}))
         assert.that(roll, hasSuccessValue({ value -> value.rolls[0] == 1}))
-        assert.that(roll, hasSuccessValue({ value -> value.rolls[1] >= 0}))
-        assert.that(roll, hasSuccessValue({ value -> value.rolls[1] <= 10}))
+        assert.that(roll, hasSuccessValue({ value -> value.rolls[1] == 2}))
+        assert.that(roll, hasSuccessValue({ value -> value.rolls[2] >= 0}))
+        assert.that(roll, hasSuccessValue({ value -> value.rolls[2] <= 10}))
+    }
+
+    @Test
+    fun randomMidframe() {
+        val roll = roll(Game(listOf(10,9)), null)
+
+        assert.that(roll, isSuccess())
+        assert.that(roll, hasSuccessValue({ value -> value.rolls.size == 3}))
+        assert.that(roll, hasSuccessValue({ value -> value.rolls[0] == 10}))
+        assert.that(roll, hasSuccessValue({ value -> value.rolls[1] == 9}))
+        assert.that(roll, hasSuccessValue({ value -> value.rolls[2] <= 1}))
     }
 }

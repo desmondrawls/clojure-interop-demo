@@ -50,8 +50,9 @@
   :set-rolls
   (fn [db [_ rolls name identifier]]
     (re-frame/dispatch [:score-game rolls name])
-    (assoc-in db [:games name :rolls] rolls)
-    (assoc-in db [:games name :identifier] identifier)))
+    (-> db
+      (assoc-in [:games name :rolls] rolls)
+      (assoc-in [:games name :identifier] identifier))))
 
 (re-frame/register-handler
   :score-game

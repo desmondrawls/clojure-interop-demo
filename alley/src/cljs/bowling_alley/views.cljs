@@ -4,7 +4,14 @@
 
 (defn parse-rolls
   [rolls]
-  (map js/parseInt (clojure.string/split rolls #",")))
+  (if (empty? rolls)
+    []
+    (map js/parseInt (clojure.string/split rolls #","))))
+
+(defn valid-games?
+  [games]
+  (println "games: " games)
+  (not (contains? games "nam")))
 
 (defn navbar
   []
@@ -30,11 +37,12 @@
   []
   (let [loading? (re-frame/subscribe [:loading?])
         error? (re-frame/subscribe [:error?])
+        games (re-frame/subscribe [:games])
         rolls (reagent/atom "")
         name (reagent/atom "")
         on-click (fn [_]
-                   (when-not (or (empty? @rolls) (empty? @name))
-                     (re-frame/dispatch [:set-rolls (parse-rolls @rolls) @name (random-uuid)])
+                   (when-not (empty? @name)
+                     (re-frame/dispatch [:set-rolls (parse-rolls @rolls) @name (.toString (random-uuid))])
                      (reset! rolls "")))]
     (fn []
       [:div
@@ -52,8 +60,8 @@
           [:button.btn.btn-default {:type "button"
                                     :on-click #(when-not @loading? (on-click %))}
            "Score"]]]]]]
-       (when @error?
-         [:p.error-text.text-danger "¯\\_(ツ)_/¯  Unknown error. Do you know what you're doing?"])])))
+       (when (or @error? (not (valid-games? @games)))
+         [:img.mt-5 {:src "styles/not_nam_rules.png"}])])))
 
 (defn game
   [game]
@@ -61,7 +69,7 @@
         rolls (:rolls (second game))
         score (:score (second game))
         identifier (:identifier (second game))
-        valid? (not (or (empty? rolls) (empty? identifier) (empty? name) (nil? score)))
+        valid? (not (or (empty? identifier) (empty? name) (nil? score)))
         on-save (fn [_] (when valid? (re-frame/dispatch [:save-game rolls name identifier])))
         on-roll (fn [_] (when valid? (re-frame/dispatch [:roll rolls name identifier])))]
     [:li.flex-content

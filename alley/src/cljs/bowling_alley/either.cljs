@@ -19,8 +19,7 @@
                (fn [other] (Left (concat value other)))
                (fn [_] (Left value))))
    :fold (fn [transformLeft, transformRight]
-           (transformLeft value))
-   :show "left"})
+           (transformLeft value))})
 
 (defn Right [value]
   {:map (fn [transform]
@@ -32,5 +31,4 @@
                (fn [other] (Left other))
                (fn [other] (Right (concat value other)))))
    :fold (fn [transformLeft, transformRight]
-           (transformRight value))
-   :show "right"})
+           (transformRight value))})

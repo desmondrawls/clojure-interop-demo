@@ -6,7 +6,8 @@
 
 (def error-messages
   {:INVALID_ROLL_TOO_HIGH "Ten is the highest possible roll."
-   :INVALID_ROLL_NEGATIVE "Zero is the lowest possible roll."})
+   :INVALID_ROLL_NEGATIVE "Zero is the lowest possible roll."
+   :INVALID_FRAME_TOO_HIGH "You can only knock down ten pins per frame."})
 
 (defn parse-rolls
   [rolls]

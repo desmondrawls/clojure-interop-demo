@@ -6,6 +6,9 @@
 (defn add [either other]
   ((:concat either) other))
 
+(defn right? [either]
+  (fold either (fn [_] false) (fn [_] true)))
+
 (defn Left [value]
   {:map (fn [transform]
           (Left value))

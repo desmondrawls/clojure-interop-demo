@@ -13,12 +13,19 @@
       (present-scoring-outcome game)
       "Negative pins")))
 
-(defn more-than-ten-pins []
+(defn more-than-ten-pins-in-a-roll []
   (let [game {:rolls '(11) :id "id"}]
     (assertions/assertEquals
       "LEFT: [:INVALID_ROLL_TOO_HIGH]"
       (present-scoring-outcome game)
-      "More than ten pins")))
+      "More than ten pins in a roll")))
+
+(defn more-than-ten-pins-in-a-frame []
+  (let [game {:rolls '(5,6) :id "id"}]
+    (assertions/assertEquals
+      "LEFT: [:INVALID_FRAME_TOO_HIGH]"
+      (present-scoring-outcome game)
+      "More than ten pins in a frame")))
 
 (defn mixed-validity-rolls []
   (let [game {:rolls '(9, -1, 4, 11, 6) :id "id"}]
@@ -116,7 +123,8 @@
 (defn run-tests []
   (print "\n\nBOWLING:\n")
   (negative-pins)
-  (more-than-ten-pins)
+  (more-than-ten-pins-in-a-roll)
+  (more-than-ten-pins-in-a-frame)
   (mixed-validity-rolls)
   (gutter-ball)
   (gutter-frame)

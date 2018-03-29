@@ -6,7 +6,7 @@ import java.util.function.Function;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import transform.bowling.scorer;
+import transform.bowling.shower;
 
 public class Bowlzilla implements Function<String, String> {
 
@@ -14,7 +14,7 @@ public class Bowlzilla implements Function<String, String> {
 		try{
 			DocumentContext documentContext = JsonPath.parse(body);
 			List<Integer> rolls = documentContext.read("$.rolls[*]");
-			return scorer.show_score(rolls);
+			return shower.show_score(rolls);
 		} catch (Exception e) {
 			return e.getMessage();
 		}

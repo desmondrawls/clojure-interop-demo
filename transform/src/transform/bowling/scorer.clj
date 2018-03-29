@@ -1,18 +1,9 @@
 (ns transform.bowling.scorer
-  (:gen-class :methods [^:static [score_game [Object] String]
-                        ^:static [show_score [Object] String]])
+  (:gen-class :methods [^:static [score_game [Object] String]])
   (:use [clojure.core]
         :reload)
-  (require [transform.bowling.shower :as shower]
+  (require [transform.bowling.validator :as validator]
            [transform.either :as either]))
-
-(defn score
-  [name]
-  [{:a "yes" :b "no"}])
-
-(defn bowl
-  [& args]
-  (println "BOWLING:"))
 
 (defn score-from-frame
   [game frame roll score]
@@ -38,7 +29,7 @@
     (if isFinishedScoring
       (either/Right score)
       (if (isMidFrame)
-        (either/Left '("MIDFRAME"))
+        (either/Left [:MIDFRAME])
         (if (isStrike)
           (scoreStrike)
           (if (isSpare)
@@ -47,12 +38,11 @@
 
 (defn score-game
   [game]
-  (score-from-frame game 0 0 0))
+  (either/fold (validator/validate-game game)
+    (fn [x]
+      (either/Left x))
+    (fn [_] (score-from-frame game 0 0 0))))
 
 (defn -score_game
   [rolls]
   (score-game {:rolls rolls :id "the fonz"}))
-
-(defn -show_score
-  [rolls]
-  (shower/show-json (score-game {:rolls rolls :id "da fonz"})))

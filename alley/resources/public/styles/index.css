@@ -33,7 +33,8 @@
     z-index: 999;
 }
 .topbar {
-    padding: 20px 0 400px 0;
+    padding: 20px 0 0px 0;
+    height: 400px;
     background-image: url("disco-bowl.jpg");
     background-repeat: no-repeat;
     background-size: cover;
@@ -67,4 +68,13 @@
     border-color: #9671dd;
     border-radius: 0;
     color: #caff2b;
+}
+
+.bg-black {
+    background-color: black;
+}
+
+.error {
+    color: red;
+    text-decoration: underline;
 }

@@ -1,10 +1,13 @@
-(ns transform.either)
+(ns bowling-alley.either)
 
 (defn fold [either left right]
   ((:fold either) left right))
 
 (defn add [either other]
   ((:concat either) other))
+
+(defn right? [either]
+  (fold either (fn [_] false) (fn [_] true)))
 
 (defn Left [value]
   {:map (fn [transform]
@@ -16,7 +19,8 @@
                (fn [other] (Left (concat value other)))
                (fn [_] (Left value))))
    :fold (fn [transformLeft, transformRight]
-           (transformLeft value))})
+           (transformLeft value))
+   :show "left"})
 
 (defn Right [value]
   {:map (fn [transform]
@@ -28,4 +32,5 @@
                (fn [other] (Left other))
                (fn [other] (Right (concat value other)))))
    :fold (fn [transformLeft, transformRight]
-           (transformRight value))})
+           (transformRight value))
+   :show "right"})

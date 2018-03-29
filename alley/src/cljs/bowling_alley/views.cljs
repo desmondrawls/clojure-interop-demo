@@ -1,6 +1,12 @@
 (ns bowling-alley.views
   (:require [re-frame.core :as re-frame]
+            [bowling-alley.validator :as validator]
+            [bowling-alley.either :as either]
             [reagent.core :as reagent]))
+
+(def error-messages
+  {:INVALID_ROLL_TOO_HIGH "Ten is the highest possible roll."
+   :INVALID_ROLL_NEGATIVE "Zero is the lowest possible roll."})
 
 (defn parse-rolls
   [rolls]
@@ -8,10 +14,19 @@
     []
     (map js/parseInt (clojure.string/split rolls #","))))
 
+(defn valid-game?
+  [game]
+  (either/right? (validator/validate-game (second game))))
+
+(defn games-validity [games]
+  (let [outcomes (map #(validator/validate-game (second %)) games)]
+    (reduce either/add (either/Right []) outcomes)))
+
 (defn valid-games?
   [games]
-  (println "games: " games)
-  (not (contains? games "nam")))
+  (let [outcomes (map #(validator/validate-game (second %)) games)
+        combined-outcome (reduce either/add (either/Right []) outcomes)]
+    (either/right? combined-outcome)))
 
 (defn navbar
   []
@@ -33,6 +48,9 @@
       [:div.loading
        [:div.three-quarters-loader "Loading..."]])))
 
+(defn show-error [error]
+  [:h2.error (error error-messages)])
+
 (defn rolls-input
   []
   (let [loading? (re-frame/subscribe [:loading?])
@@ -43,25 +61,34 @@
         on-click (fn [_]
                    (when-not (empty? @name)
                      (re-frame/dispatch [:set-rolls (parse-rolls @rolls) @name (.toString (random-uuid))])
-                     (reset! rolls "")))]
+                     (reset! rolls "")
+                     (reset! name "")))]
     (fn []
       [:div
        [:div.input-group
         [:div.input-group
          [:div.container
           [:div.row.justify-content-md-center
-         [:input.form-control.col-lg-3.mr-3 {:type "text"
-                               :placeholder "Enter Name"
-                               :on-change #(reset! name (-> % .-target .-value))}]
+           [:input.form-control.col-lg-3.mr-3 {:type "text"
+                                               :placeholder "Enter Name"
+                                               :value @name
+                                               :on-change #(reset! name (-> % .-target .-value))}]
            [:input.form-control.col-lg-6 {:type "text"
-                               :placeholder "Enter Rolls"
-                               :on-change #(reset! rolls (-> % .-target .-value))}]
-         [:span.input-group-btn.col-lg-2
-          [:button.btn.btn-default {:type "button"
-                                    :on-click #(when-not @loading? (on-click %))}
-           "Score"]]]]]]
-       (when (or @error? (not (valid-games? @games)))
-         [:img.mt-5 {:src "styles/not_nam_rules.png"}])])))
+                                          :placeholder "Enter Rolls"
+                                          :value @rolls
+                                          :on-change #(reset! rolls (-> % .-target .-value))}]
+           [:span.input-group-btn.col-lg-2
+            [:button.btn.btn-default {:type "button"
+                                      :on-click #(when-not @loading? (on-click %))}
+             "Score"]]]]]]
+       (either/fold (games-validity @games)
+         (fn [errors]
+           [:div
+            [:img.mt-5 {:src "styles/not_nam_rules.png"}]
+            [:div.bg-black
+             (map show-error errors)]])
+         (fn [_] (when @error?
+                   [:h1 "UH-OH something went wrong. Are you trying to do microservices?"])))])))
 
 (defn game
   [game]
@@ -88,9 +115,10 @@
 (defn games
   []
   (fn []
-    (let [games (re-frame/subscribe [:games])]
+    (let [games (re-frame/subscribe [:games])
+          valid-games (filter valid-game? @games)]
       [:ul.flex-container
-       (map game @games)])))
+       (map game valid-games)])))
 
 ;; home
 (defn home-panel []

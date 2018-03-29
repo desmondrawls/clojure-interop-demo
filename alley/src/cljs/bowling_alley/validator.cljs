@@ -16,9 +16,15 @@
         (recur (either/add current-outcome cumulative-outcome) (rest remaining-rolls))))))
 
 (defn validate-game [game]
-  (println "validating: " game)
-  (println "validating: " (:rolls game))
   (either/fold (validate-rolls (:rolls game))
     (fn [x]
       (either/Left x))
     (fn [_] (either/Right game))))
+
+(defn valid-game?
+  [game]
+  (either/right? (validate-game (second game))))
+
+(defn validate-games [games]
+  (let [outcomes (map #(validate-game (second %)) games)]
+    (reduce either/add (either/Right []) outcomes)))

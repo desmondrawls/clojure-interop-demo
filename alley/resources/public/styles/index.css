@@ -74,7 +74,10 @@
     background-color: black;
 }
 
-.error {
+.red {
     color: red;
+}
+
+.underline {
     text-decoration: underline;
 }

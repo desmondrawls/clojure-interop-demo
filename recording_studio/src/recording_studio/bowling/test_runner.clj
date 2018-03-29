@@ -2,7 +2,8 @@
   (require [datomic.api :as d]
            [recording_studio.bowling.fetcher :as fetcher]
            [recording_studio.bowling.identifier :as identifier])
-  (:import (java.util UUID)))
+  (:import (java.util UUID)
+           (bowling Game)))
 
 (defn assertEquals [expected actual name]
   (if (= expected actual)
@@ -18,7 +19,7 @@
                 ["game-db-id" :game/name "game-name"]
                 ["game-db-id" :game/identifier "game-identifier"]]]
     (assertEquals
-      '(["pins" "frame" "game-name" "game-identifier"])
+      '(["pins" "frame" "game-name"])
       (seq (d/q identifier/by-identifier datoms "game-identifier"))
       "querying for frames and pins")))
 
@@ -37,9 +38,9 @@
                 ["game2-db-id" :game/name "game2-name"]
                 ["game2-db-id" :game/identifier game2-identifier]]]
     (assertEquals
-      '((Game. '(1, 9) "game1-name" game1-identifier)
-         (Game. '(1) "game2-name" game2-identifier))
-      (map fetcher/gamify (group-by last (fetcher/fetch-games datoms)))
+      (set [(Game. [2, 9] "game1-name" game1-identifier)
+       (Game. [2] "game2-name" game2-identifier)])
+      (set (map fetcher/gamify (group-by last (fetcher/fetch-games datoms))))
       "fetch_games")))
 
 (defn runTests []

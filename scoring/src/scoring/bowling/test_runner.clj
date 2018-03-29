@@ -1,7 +1,7 @@
-(ns transform.bowling.test-runner
-  (require [transform.assertions :as assertions]
-           [transform.either :as either]
-           [transform.bowling.scorer :as scorer]))
+(ns scoring.bowling.test-runner
+  (require [scoring.assertions :as assertions]
+           [scoring.either :as either]
+           [scoring.bowling.scorer :as scorer]))
 
 (defn present-scoring-outcome [game]
   ((:fold (scorer/score-game game)) #(str "LEFT: " %) #(str "RIGHT: " %)))

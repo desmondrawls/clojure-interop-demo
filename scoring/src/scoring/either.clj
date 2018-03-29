@@ -1,4 +1,4 @@
-(ns transform.either)
+(ns scoring.either)
 
 (defn fold [either left right]
   ((:fold either) left right))

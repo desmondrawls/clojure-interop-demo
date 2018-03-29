@@ -1,7 +1,7 @@
-(ns transform.bowling.shower
+(ns scoring.bowling.shower
   (:gen-class :methods [^:static [show_score [Object] String]])
   (:require [clojure.data.json :as json]
-            [transform.bowling.scorer :as scorer]))
+            [scoring.bowling.scorer :as scorer]))
 
 (defn show-either
   [either]

@@ -1,4 +1,4 @@
-(defproject transform "0.1.0-SNAPSHOT"
+(defproject scoring "0.1.0-SNAPSHOT"
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
@@ -7,7 +7,7 @@
                  [org.clojure/data.json "0.2.6"]
                  [com.rap.battle/producer "0.0.1-SNAPSHOT"]]
   :plugins [[lein-exec "0.3.6"]]
-  :main ^:skip-aot transform.bowling.scorer
-  :aliases {"test" ["exec" "-ep" "(use 'transform.test) (run-tests)"]}
+  :main ^:skip-aot scoring.bowling.scorer
+  :aliases {"test" ["exec" "-ep" "(use 'scoring.test) (run-tests)"]}
   :aot :all
   :profiles {:uberjar {:aot :all}})

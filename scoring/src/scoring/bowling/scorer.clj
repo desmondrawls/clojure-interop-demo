@@ -1,9 +1,9 @@
-(ns transform.bowling.scorer
+(ns scoring.bowling.scorer
   (:gen-class :methods [^:static [score_game [Object] String]])
   (:use [clojure.core]
         :reload)
-  (require [transform.bowling.validator :as validator]
-           [transform.either :as either]))
+  (require [scoring.bowling.validator :as validator]
+           [scoring.either :as either]))
 
 (defn score-from-frame
   [game frame roll score]

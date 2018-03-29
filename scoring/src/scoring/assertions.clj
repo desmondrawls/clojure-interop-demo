@@ -1,4 +1,4 @@
-(ns transform.assertions)
+(ns scoring.assertions)
 
 (defn assertEquals [expected actual name]
   (if (= expected actual)

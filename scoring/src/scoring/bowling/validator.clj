@@ -1,5 +1,5 @@
-(ns transform.bowling.validator
-  (require [transform.either :as either]))
+(ns scoring.bowling.validator
+  (require [scoring.either :as either]))
 
 (defn validate-roll [pins]
   (if (< pins 0)

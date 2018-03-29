@@ -1,6 +1,6 @@
-(ns transform.test
+(ns scoring.test
   (:gen-class)
-  (:require [transform.bowling.test-runner :as bowling]))
+  (:require [scoring.bowling.test-runner :as bowling]))
 
 (defn run-tests-standalone
   []

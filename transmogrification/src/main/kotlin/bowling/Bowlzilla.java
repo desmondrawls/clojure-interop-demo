@@ -6,7 +6,7 @@ import java.util.function.Function;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import transform.bowling.shower;
+import scoring.bowling.shower;
 
 public class Bowlzilla implements Function<String, String> {
 

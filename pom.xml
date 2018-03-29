@@ -12,7 +12,7 @@
         <module>recording_studio</module>
         <module>recording_studio_beans</module>
         <module>transmogrification</module>
-        <module>transform</module>
+        <module>scoring</module>
         <module>bowling_modulith</module>
         <module>bowling_transform</module>
         <module>bowling_source</module>
@@ -22,7 +22,7 @@
     <packaging>pom</packaging>
 
     <name>mirrors</name>
-    <description>Demo project for Spring Boot</description>
+    <description>Demo project for Clojure, Datomic, Riff, Cljs, Re-frame</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>

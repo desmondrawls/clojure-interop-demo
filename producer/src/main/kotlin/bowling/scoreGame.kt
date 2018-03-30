@@ -5,7 +5,9 @@ import java.lang.Integer.min
 enum class BowlingFailures {
     SCORING_MIDFRAME,
     INVALID_ROLL_TOO_HIGH,
-    INVALID_ROLL_NEGATIVE
+    INVALID_ROLL_NEGATIVE,
+    INVALID_FRAME_TOO_HIGH,
+    INVALID_NAME_MISSING
 }
 
 fun scoreGame(game: Game): Outcome<Int, BowlingFailures> {

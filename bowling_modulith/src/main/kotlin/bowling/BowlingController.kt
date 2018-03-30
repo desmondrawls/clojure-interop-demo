@@ -8,6 +8,7 @@ import java.util.*
 @RestController
 class BowlingController(val identifyGame: (identifier: UUID) -> Outcome<Game, CommonErrors>,
                         val fetchGames: () -> Outcome<List<Game>, CommonErrors>,
+                        val scorer: ScoreGameUseCase,
                         val gameSaver: GameSaver) {
 
     @GetMapping("/games/{identifier}")
@@ -38,7 +39,7 @@ class BowlingController(val identifyGame: (identifier: UUID) -> Outcome<Game, Co
     fun score(@PathVariable identifier: String,
               @RequestParam name: String,
               @RequestParam rolls: List<Int>) =
-            scoreGame(Game(rolls, name, UUID.fromString(identifier)))
+            scorer.score(Game(rolls, name, UUID.fromString(identifier)))
 
     @GetMapping("/games/{identifier}/rolls/new")
     @ResponseBody

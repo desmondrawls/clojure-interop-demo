@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration
 import recording_studio.bowling.fetcher
 import recording_studio.bowling.identifier
 import recording_studio.bowling.saver
+import scoring.bowling.shower
 
 @Configuration
 class BowlingStudioConfiguration {
@@ -21,5 +22,10 @@ class BowlingStudioConfiguration {
     @Bean
     fun bowlingStudioGameSaver(): GameSaver {
         return saver.game_saver()
+    }
+
+    @Bean
+    fun scoreGameUseCase(): ScoreGameUseCase {
+        return shower.scorer()
     }
 }

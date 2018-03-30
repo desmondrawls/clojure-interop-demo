@@ -1,12 +1,10 @@
 (ns bowling-alley.db)
 
 (def default-db
-  {
-   :loading? false
+  {:loading? false
    :error false
-   :games {}
-   :user {
-          :profile {}
-          :repos []
-          }
-   })
+   :submitted false
+   :inputs {:rolls ""
+            :name ""
+            :submitted false}
+   :games {}})

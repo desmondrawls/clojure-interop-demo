@@ -7,7 +7,8 @@
 (def error-messages
   {:INVALID_ROLL_TOO_HIGH "Ten is the highest possible roll."
    :INVALID_ROLL_NEGATIVE "Zero is the lowest possible roll."
-   :INVALID_FRAME_TOO_HIGH "You can only knock down ten pins per frame."})
+   :INVALID_FRAME_TOO_HIGH "You can only knock down ten pins per frame."
+   :INVALID_NAME_MISSING "You need a name."})
 
 (defn parse-rolls
   [rolls]
@@ -23,13 +24,20 @@
   (let [loading? (re-frame/subscribe [:loading?])
         error? (re-frame/subscribe [:error?])
         games (re-frame/subscribe [:games])
-        rolls (reagent/atom "")
-        name (reagent/atom "")
+        rolls (re-frame/subscribe [:inputs-rolls])
+        name (re-frame/subscribe [:inputs-name])
+        submitted (re-frame/subscribe [:inputs-submitted])
+        on-change-rolls (fn [rolls-input]
+                          (re-frame/dispatch [:set-rolls-input rolls-input]))
+        on-change-name (fn [name-input]
+                         (println "name changed: " name-input)
+                         (re-frame/dispatch [:set-name-input name-input]))
         on-click (fn [_]
                    (when-not (empty? @name)
+                     (re-frame/dispatch [:submit])
                      (re-frame/dispatch [:set-rolls (parse-rolls @rolls) @name (.toString (random-uuid))])
-                     (reset! rolls "")
-                     (reset! name "")))]
+                     (when (validator/valid-game? {:rolls (parse-rolls @rolls) :name @name})
+                       (re-frame/dispatch [:clear-inputs]))))]
     (fn []
       [:div
        [:div.input-group
@@ -39,33 +47,36 @@
            [:input.form-control.col-lg-3.mr-3 {:type "text"
                                                :placeholder "Enter Name"
                                                :value @name
-                                               :on-change #(reset! name (-> % .-target .-value))}]
+                                               :on-change #(on-change-name (-> % .-target .-value))}]
            [:input.form-control.col-lg-6 {:type "text"
                                           :placeholder "Enter Rolls"
                                           :value @rolls
-                                          :on-change #(reset! rolls (-> % .-target .-value))}]
+                                          :on-change #(on-change-rolls (-> % .-target .-value))}]
            [:span.input-group-btn.col-lg-2
             [:button.btn.btn-default {:type "button"
                                       :on-click #(when-not @loading? (on-click %))}
              "Score"]]]]]]
-       (either/fold (validator/validate-games @games)
+       (either/fold (validator/validate-game {:rolls (parse-rolls @rolls) :name @name})
          (fn [errors]
-           [:div
-            [:img.mt-5 {:src "styles/not_nam_rules.png"}]
-            [:div.bg-black
-             (map show-error errors)]])
+           (when @submitted
+             [:div
+              [:img.mt-5 {:src "styles/not_nam_rules.png"}]
+              [:div.bg-black
+               (map show-error errors)]]))
          (fn [_] (when @error?
                    [:h1.red "UH-OH something went wrong. Are you trying to do microservices?"])))])))
 
 (defn game
   [game]
-  (let [name (first game)
+  (let [name (:name (second game))
         rolls (:rolls (second game))
         score (:score (second game))
-        identifier (:identifier (second game))
+        identifier (first game)
         valid? (not (or (empty? identifier) (empty? name) (nil? score)))
         on-save (fn [_] (when valid? (re-frame/dispatch [:save-game rolls name identifier])))
         on-roll (fn [_] (when valid? (re-frame/dispatch [:roll rolls name identifier])))]
+    (println "GAME: " game)
+    (println "NAME: " name)
     [:li.flex-content
      [:h2 name]
      [:span.input-group-btn.mr-1
@@ -83,7 +94,8 @@
   []
   (fn []
     (let [games (re-frame/subscribe [:games])
-          valid-games (filter validator/valid-game? @games)]
+          valid-games (filter (comp validator/valid-game? second) @games)]
+      (println "games: " games)
       [:ul.flex-container
        (map game valid-games)])))
 

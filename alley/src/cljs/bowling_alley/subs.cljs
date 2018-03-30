@@ -13,6 +13,21 @@
    (reaction (:name @db))))
 
 (re-frame/register-sub
+  :inputs-name
+  (fn [db]
+    (reaction (get-in @db [:inputs :name]))))
+
+(re-frame/register-sub
+  :inputs-submitted
+  (fn [db]
+    (reaction (get-in @db [:inputs :submitted]))))
+
+(re-frame/register-sub
+  :inputs-rolls
+  (fn [db]
+    (reaction (get-in @db [:inputs :rolls]))))
+
+(re-frame/register-sub
  :active-panel
  (fn [db _]
    (reaction (:active-panel @db))))

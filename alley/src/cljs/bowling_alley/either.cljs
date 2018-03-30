@@ -6,6 +6,9 @@
 (defn add [either other]
   ((:concat either) other))
 
+(defn add-all [eithers]
+  (reduce add eithers))
+
 (defn right? [either]
   (fold either (fn [_] false) (fn [_] true)))
 

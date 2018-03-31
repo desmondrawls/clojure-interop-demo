@@ -34,7 +34,7 @@ class BowlingController(val identifyGame: (identifier: UUID) -> Outcome<Game, Co
         gameSaver.save(Game(rolls, name, identifier))
     }
 
-    @GetMapping("games/{identifier}/score")
+    @GetMapping("/games/{identifier}/score")
     @ResponseBody
     fun score(@PathVariable identifier: String,
               @RequestParam name: String,

@@ -65,7 +65,6 @@
 (re-frame/register-handler
   :clear-inputs
   (fn [db [_]]
-    (println "CLEARING")
     (-> db
       (assoc-in [:inputs :rolls] "")
       (assoc-in [:inputs :name] "")
@@ -83,9 +82,9 @@
 (re-frame/register-handler
   :score-game
   (fn [db [_ rolls identifier]]
-    (ajax.core/POST
-      "http://localhost:8000/requests/rolls"
-      {:params {:rolls rolls}
+    (ajax.core/GET
+      (str "http://localhost:8000/games/" identifier "/score")
+      {:params {:rolls (clojure.string/join "&rolls=" rolls) :name "yo"}
        :format :json
        :headers {"Content-Type" "text/plain"}
        :handler #(re-frame/dispatch [:process-scoring-response %1 identifier])
@@ -97,8 +96,8 @@
 (re-frame/register-handler
   :process-scoring-response
   (fn [db [_ response identifier]]
-    (let [right (get (js->clj response) "right")
-          left (get (js->clj response) "left")]
+    (let [right (get (js->clj response) "value")
+          left (get (js->clj response) "errors")]
       (-> db
         (assoc :loading? false)
         (assoc-in [:games identifier :score] (or right (first left)))))))

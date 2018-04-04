@@ -1,7 +1,8 @@
 (ns bowling-alley.handlers
   (:require [ajax.core :refer [GET]]
             [re-frame.core :as re-frame]
-            [bowling-alley.db :as db]))
+            [bowling-alley.db :as db]
+            [bowling-alley.either :as either]))
 
 (enable-console-print!)
 
@@ -59,8 +60,12 @@
 (re-frame/register-handler
   :set-name-input
   (fn [db [_ name]]
-    (println "assoc: " name)
     (-> db (assoc-in [:inputs :name] name))))
+
+(re-frame/register-handler
+  :set-inputs
+  (fn [db [_ timestamp rolls name submitted]]
+    (-> db (assoc-in [:inputs timestamp] {:rolls rolls :name name :submitted submitted}))))
 
 (re-frame/register-handler
   :clear-inputs
@@ -87,7 +92,7 @@
       {:params {:rolls (clojure.string/join "&rolls=" rolls) :name "yo"}
        :format :json
        :headers {"Content-Type" "text/plain"}
-       :handler #(re-frame/dispatch [:process-scoring-response %1 identifier])
+       :handler #(re-frame/dispatch [:process-scoring-response %1 identifier rolls])
        :error-handler #(re-frame/dispatch [:bad-response %1])})
     (-> db
       (assoc :loading? true)
@@ -95,11 +100,12 @@
 
 (re-frame/register-handler
   :process-scoring-response
-  (fn [db [_ response identifier]]
+  (fn [db [_ response identifier rolls]]
     (let [right (get (js->clj response) "value")
           left (get (js->clj response) "errors")]
       (-> db
         (assoc :loading? false)
+        (assoc-in [:roll-validities rolls] (if right (either/Right right) (either/Left left)))
         (assoc-in [:games identifier :score] (or right (first left)))))))
 
 (re-frame/register-handler

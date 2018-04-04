@@ -4,7 +4,13 @@
   {:loading? false
    :error false
    :submitted false
-   :inputs {:rolls ""
-            :name ""
-            :submitted false}
+   :roll-validities {}
+   :inputs {}
    :games {}})
+
+;timestamp {
+;           :rolls ""
+;           :name ""
+;           :submitted false
+;           }
+

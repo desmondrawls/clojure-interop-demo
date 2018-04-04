@@ -8,7 +8,11 @@
   {:INVALID_ROLL_TOO_HIGH "Ten is the highest possible roll."
    :INVALID_ROLL_NEGATIVE "Zero is the lowest possible roll."
    :INVALID_FRAME_TOO_HIGH "You can only knock down ten pins per frame."
+   :SCORING_MIDFRAME "You have to start on frame."
    :INVALID_NAME_MISSING "You need a name."})
+
+(defn valid-game? [validity]
+  (either/fold validity (fn [errors] (or (= errors [:UNKNOWN]) (= errors [:MIDFRAME]))) (fn [_] true)))
 
 (defn parse-rolls
   [rolls]
@@ -17,27 +21,27 @@
     (map js/parseInt (clojure.string/split rolls #","))))
 
 (defn show-error [error]
-  [:h2.red.underline (error error-messages)])
+  [:h2.red.underline (get error-messages (keyword error))])
 
 (defn rolls-input
   []
   (let [loading? (re-frame/subscribe [:loading?])
         error? (re-frame/subscribe [:error?])
-        games (re-frame/subscribe [:games])
-        rolls (re-frame/subscribe [:inputs-rolls])
-        name (re-frame/subscribe [:inputs-name])
-        submitted (re-frame/subscribe [:inputs-submitted])
-        on-change-rolls (fn [rolls-input]
-                          (re-frame/dispatch [:set-rolls-input rolls-input]))
-        on-change-name (fn [name-input]
-                         (println "name changed: " name-input)
-                         (re-frame/dispatch [:set-name-input name-input]))
-        on-click (fn [_]
-                   (when-not (empty? @name)
-                     (re-frame/dispatch [:submit])
-                     (re-frame/dispatch [:set-rolls (parse-rolls @rolls) @name (.toString (random-uuid))])
-                     (when (validator/valid-game? {:rolls (parse-rolls @rolls) :name @name})
-                       (re-frame/dispatch [:clear-inputs]))))]
+        inputs (re-frame/subscribe [:inputs])
+        roll-validities (re-frame/subscribe [:roll-validities])
+        most-recent (fn [inputs] (->> (keys inputs) sort last (get inputs)))
+        most-recent-validity (fn [inputs validities] (let [rolls (:rolls (most-recent inputs))]
+                                                       (or (get validities (parse-rolls rolls)) (either/Left [:UNKNOWN]))))
+        most-recent-input (fn [inputs validities field default] (let [most-recent (most-recent inputs)]
+                                                                  (if (and (:submitted most-recent) (either/right? (most-recent-validity inputs validities)))
+                                                                    default
+                                                                    (get most-recent field))))
+        on-change (fn [name-input rolls-input]
+                    (re-frame/dispatch [:set-inputs (.getTime (js/Date.)) rolls-input name-input false]))
+        on-click (fn [name-input rolls-input]
+                   (when-not (or (empty? name-input) (empty? rolls-input))
+                     (re-frame/dispatch [:set-inputs (.getTime (js/Date.)) rolls-input name-input true])
+                     (re-frame/dispatch [:set-rolls (parse-rolls rolls-input) name-input (.toString (random-uuid))])))]
     (fn []
       [:div
        [:div.input-group
@@ -46,19 +50,25 @@
           [:div.row.justify-content-md-center
            [:input.form-control.col-lg-3.mr-3 {:type "text"
                                                :placeholder "Enter Name"
-                                               :value @name
-                                               :on-change #(on-change-name (-> % .-target .-value))}]
+                                               :value (most-recent-input @inputs @roll-validities :name "")
+                                               :on-change #(on-change (-> % .-target .-value) (most-recent-input @inputs @roll-validities :rolls ""))}]
            [:input.form-control.col-lg-6 {:type "text"
                                           :placeholder "Enter Rolls"
-                                          :value @rolls
-                                          :on-change #(on-change-rolls (-> % .-target .-value))}]
+                                          :value (most-recent-input @inputs @roll-validities :rolls "")
+                                          :on-change #(on-change (most-recent-input @inputs @roll-validities :name "") (-> % .-target .-value))}]
            [:span.input-group-btn.col-lg-2
             [:button.btn.btn-default {:type "button"
-                                      :on-click #(when-not @loading? (on-click %))}
+                                      :on-click (fn [_] (when-not @loading? (on-click (:name (most-recent @inputs)) (:rolls (most-recent @inputs)))))}
              "Score"]]]]]]
-       (either/fold (validator/validate-game {:rolls (parse-rolls @rolls) :name @name})
+       [:div.red (str "ROLLS: " (most-recent-input @inputs @roll-validities :rolls ""))]
+       [:div.red (str "NAME: " (most-recent-input @inputs @roll-validities :name ""))]
+       [:div.red (str "SUBMITTED: " (most-recent-input @inputs @roll-validities :submitted false))]
+       [:div.red (str "MOST RECENT VALIDITY: " (either/fold (most-recent-validity @inputs @roll-validities) identity identity))]
+       (either/fold (most-recent-validity @inputs @roll-validities)
          (fn [errors]
-           (when @submitted
+           (when (and
+                   (most-recent-input @inputs @roll-validities :submitted false)
+                   (not (= (map keyword errors) [:UNKNOWN])))
              [:div
               [:img.mt-5 {:src "styles/not_nam_rules.png"}]
               [:div.bg-black
@@ -75,8 +85,6 @@
         valid? (not (or (empty? identifier) (empty? name) (nil? score)))
         on-save (fn [_] (when valid? (re-frame/dispatch [:save-game rolls name identifier])))
         on-roll (fn [_] (when valid? (re-frame/dispatch [:roll rolls name identifier])))]
-    (println "GAME: " game)
-    (println "NAME: " name)
     [:li.flex-content
      [:h2 name]
      [:span.input-group-btn.mr-1
@@ -130,11 +138,11 @@
            [rolls-input]]]]]])))
 
 (defn main-panel []
-  (let [active-panel (re-frame/subscribe [:active-panel])]
+  (let [active-panel (re-frame/subscribe [:active-panel])
+        roll-validities (re-frame/subscribe [:roll-validities])]
     (fn []
       [:div
        [navbar]
        [loading-throbber]
        [home-panel]
-       [games]
-       ])))
+       [games]])))

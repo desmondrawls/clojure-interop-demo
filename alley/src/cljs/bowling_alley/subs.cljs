@@ -3,6 +3,11 @@
   (:require [re-frame.core :as re-frame]))
 
 (re-frame/register-sub
+  :roll-validities
+  (fn [db]
+    (reaction (:roll-validities @db))))
+
+(re-frame/register-sub
   :games
   (fn [db]
     (reaction (:games @db))))
@@ -13,19 +18,9 @@
    (reaction (:name @db))))
 
 (re-frame/register-sub
-  :inputs-name
+  :inputs
   (fn [db]
-    (reaction (get-in @db [:inputs :name]))))
-
-(re-frame/register-sub
-  :inputs-submitted
-  (fn [db]
-    (reaction (get-in @db [:inputs :submitted]))))
-
-(re-frame/register-sub
-  :inputs-rolls
-  (fn [db]
-    (reaction (get-in @db [:inputs :rolls]))))
+    (reaction (get-in @db [:inputs]))))
 
 (re-frame/register-sub
  :active-panel

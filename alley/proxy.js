@@ -12,9 +12,9 @@ var router = http.createServer(
     var target = url.parse(req.url)
     if(target.pathname.endsWith('/rolls/new')) {
       console.log("Forwarding request to transform")
-      proxy.web(req, res, {target: 'http://localhost:8083'})
+      proxy.web(req, res, {target: 'http://localhost:8080'})
     } else if(target.pathname.endsWith('/score')) {
-      console.log("Forwarding request to modulith scoring endpoint")
+      console.log("Forwarding request to transform")
       proxy.web(req, res, {target: 'http://localhost:8080'})
     } else if(target.pathname.startsWith('/source/games')) {
       console.log("Forwarding request to source")

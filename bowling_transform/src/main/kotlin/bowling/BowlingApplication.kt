@@ -12,8 +12,8 @@ import org.springframework.context.annotation.ComponentScan
 open class BowlingApplication {
 
     @Bean
-    open fun bowlingController(): BowlingController =
-        BowlingController()
+    open fun bowlingController(scorer: ScoreGameUseCase): BowlingController =
+        BowlingController(scorer)
 }
 
 fun main(args: Array<String>) {

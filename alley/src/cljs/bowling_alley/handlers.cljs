@@ -78,7 +78,6 @@
 (re-frame/register-handler
   :set-rolls
   (fn [db [_ rolls name identifier]]
-    (println "set rolls: " name " : " rolls)
     (re-frame/dispatch [:score-game rolls identifier])
     (-> db
       (assoc-in [:games identifier :rolls] rolls)

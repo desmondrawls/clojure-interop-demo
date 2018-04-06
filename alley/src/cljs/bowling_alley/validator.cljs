@@ -32,8 +32,8 @@
 
 (defn validate-game [game]
   (let [validation (either/add-all
-                     [(validate-name (:name game))
-                      (validate-frames (:rolls game))
+                     [(validate-frames (:rolls game))
+                      ;(validate-name (:name game))
                       (validate-rolls (:rolls game))])]
     (either/fold validation
       (fn [errors]

@@ -6,11 +6,10 @@
            [scoring.either :as either]))
 
 (defn score-from-frame
-  [game frame roll score]
+  [rolls frame roll score]
   (let [nextFrame (+ frame 1)
         nextRoll #(+ roll 1)
         rollAfterNext #(+ roll 2)
-        rolls (:rolls game)
         pinsForThisRoll #(nth rolls roll)
         pinsForNextRoll #(nth rolls (nextRoll))
         pinsForRollAfterNext #(nth rolls (rollAfterNext))
@@ -20,16 +19,17 @@
         isStrike #(= (pinsForThisRoll) 10)
         scoreStrike #(let [bonus-rolls (drop roll (take (min (+ roll 3) (count rolls)) rolls))
                            bonus (reduce + bonus-rolls)]
-                             (score-from-frame game nextFrame (nextRoll) (+ score bonus)))
+                       (score-from-frame rolls nextFrame (nextRoll) (+ score bonus)))
         isSpare #(and (> (count rolls) (rollAfterNext)) (= (+ (pinsForThisRoll) (pinsForNextRoll)) 10))
         scoreSpare #(let [bonus (if (= frame 9) (* 2 (pinsForRollAfterNext)) (pinsForRollAfterNext))]
-                            (score-from-frame game nextFrame (rollAfterNext) (+ score 10 bonus)))
-        scoreBoring #(score-from-frame game nextFrame (rollAfterNext) (+ score (pinsForThisRoll) (pinsForNextRoll)))
-        isMidFrame #(and (= (count rolls) (nextRoll)) (not (isStrike)) (not (= frame 10)))]
+                      (score-from-frame rolls nextFrame (rollAfterNext) (+ score 10 bonus)))
+        scoreBoring #(score-from-frame rolls nextFrame (rollAfterNext) (+ score (pinsForThisRoll) (pinsForNextRoll)))
+        isMidFrame #(and (= (count rolls) (nextRoll)) (not (isStrike)) (not (= frame 10)))
+        scoreMidFrame #(score-from-frame (drop-last rolls) 0 0 0)]
     (if isFinishedScoring
       (either/Right score)
       (if (isMidFrame)
-        (either/Left [:MIDFRAME])
+        (scoreMidFrame)
         (if (isStrike)
           (scoreStrike)
           (if (isSpare)
@@ -41,7 +41,7 @@
   (either/fold (validator/validate-game game)
     (fn [x]
       (either/Left x))
-    (fn [_] (score-from-frame game 0 0 0))))
+    (fn [_] (score-from-frame (:rolls game) 0 0 0))))
 
 (defn -score_game
   [rolls]

@@ -21,14 +21,14 @@
       "More than ten pins in a roll")))
 
 (defn more-than-ten-pins-in-a-frame []
-  (let [game {:rolls '(5,6) :id "id" :name "name"}]
+  (let [game {:rolls '(5 6) :id "id" :name "name"}]
     (assertions/assertEquals
       "LEFT: [:INVALID_FRAME_TOO_HIGH]"
       (present-scoring-outcome game)
       "More than ten pins in a frame")))
 
 (defn mixed-validity-rolls []
-  (let [game {:rolls '(9, -1, 4, 11, 6) :id "id" :name "name"}]
+  (let [game {:rolls '(9 -1 4 11 6) :id "id" :name "name"}]
     (assertions/assertEquals
       true
       ((:fold (scorer/score-game game))
@@ -39,9 +39,23 @@
 (defn gutter-ball []
   (let [game {:rolls '(0) :id "id" :name "name"}]
     (assertions/assertEquals
-      "LEFT: [:MIDFRAME]"
+      "RIGHT: 0"
       (present-scoring-outcome game)
       "Gutter ball")))
+
+(defn mid-frame []
+  (let [game {:rolls '(1 2 3) :id "id" :name "name"}]
+    (assertions/assertEquals
+      "RIGHT: 3"
+      (present-scoring-outcome game)
+      "Mid-frame")))
+
+(defn mid-frame-after-a-strike []
+  (let [game {:rolls '(10 5) :id "id" :name "name"}]
+    (assertions/assertEquals
+      "RIGHT: 10"
+      (present-scoring-outcome game)
+      "Mid-frame after a strike")))
 
 (defn gutter-frame []
   (let [game {:rolls (repeat 2 0) :id "id" :name "name"}]
@@ -127,6 +141,8 @@
   (more-than-ten-pins-in-a-frame)
   (mixed-validity-rolls)
   (gutter-ball)
+  (mid-frame)
+  (mid-frame-after-a-strike)
   (gutter-frame)
   (spare-frame)
   (strike-frame)

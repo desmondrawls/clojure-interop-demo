@@ -11,12 +11,7 @@
   (into {}
     (for [game games]
       (let [key-game (clojure.walk/keywordize-keys game)]
-        [(:identifier key-game) (dissoc key-game :identifier)]))))
-
-(defn normalize-game
-  [game]
-  (let [key-game (clojure.walk/keywordize-keys game)]
-    {(:identifier key-game) (dissoc key-game :identifier)}))
+        [(:identifier key-game) key-game]))))
 
 (re-frame/register-handler
   :initialize-db
@@ -28,20 +23,28 @@
   (fn [db [_ active-panel]]
     (assoc db :active-panel active-panel)))
 
+(defn save-remotely [rolls name identifier]
+  (ajax.core/POST
+    "http://localhost:8000/games"
+    {:params {:rolls rolls :name name :identifier identifier}
+     :format :json
+     :headers {"Content-Type" "application/json"
+               "Accept" "application/json"}
+     :handler #(re-frame/dispatch [:stop-loading])
+     :error-handler #(re-frame/dispatch [:bad-response %1])}))
+
 (re-frame/register-handler
   :save-game
   (fn [db [_ rolls name identifier]]
-    (ajax.core/POST
-      "http://localhost:8000/games"
-      {:params {:rolls rolls :name name :identifier identifier}
-       :format :json
-       :headers {"Content-Type" "application/json"
-                 "Accept" "application/json"}
-       :handler #(re-frame/dispatch [:stop-loading])
-       :error-handler #(re-frame/dispatch [:bad-response %1])})
+    (save-remotely rolls name identifier)
     (-> db
       (assoc :loading? true)
       (assoc :error false))))
+
+(re-frame/register-handler
+  :identify-game
+  (fn [db [_ local-identifier global-identifier]]
+    (-> db (assoc-in [:games local-identifier :identifier] global-identifier))))
 
 (re-frame/register-handler
   :stop-loading
@@ -49,57 +52,33 @@
     (-> db (assoc :loading? false))))
 
 (re-frame/register-handler
-  :submit
-  (fn [db [_]]
-    (-> db (assoc-in [:inputs :submitted] true))))
-
-(re-frame/register-handler
-  :set-rolls-input
-  (fn [db [_ rolls]]
-    (-> db (assoc-in [:inputs :rolls] rolls))))
-
-(re-frame/register-handler
-  :set-name-input
-  (fn [db [_ name]]
-    (-> db (assoc-in [:inputs :name] name))))
-
-(re-frame/register-handler
   :set-inputs
   (fn [db [_ timestamp rolls name submitted]]
     (-> db (assoc-in [:inputs timestamp] {:rolls rolls :name name :submitted submitted}))))
 
-(re-frame/register-handler
-  :clear-inputs
-  (fn [db [_]]
-    (-> db
-      (assoc-in [:inputs :rolls] "")
-      (assoc-in [:inputs :name] "")
-      (assoc-in [:inputs :submitted] false))))
+(defn response-to-result [response]
+  (let [right (get (js->clj response) "value")
+        left (get (js->clj response) "errors")]
+    (println "to: " response)
+    (if right (either/Right right) (either/Left left))))
 
-(re-frame/register-handler
-  :set-rolls
-  (fn [db [_ rolls name identifier]]
-    (re-frame/dispatch [:score-game rolls identifier])
-    (-> db
-      (assoc-in [:games identifier :rolls] rolls)
-      (assoc-in [:games identifier :name] name))))
-
-(defn score-remotely [rolls identifier]
+(defn score-remotely [rolls]
   (ajax.core/GET
-    (str "http://localhost:8000/games/" identifier "/score")
+    (str "http://localhost:8000/games/score")
     {:params {:rolls (clojure.string/join "&rolls=" rolls) :name "yo"}
      :format :json
      :headers {"Content-Type" "text/plain"}
-     :handler #(re-frame/dispatch [:process-scoring-response %1 identifier rolls])
+     :handler #(re-frame/dispatch [:process-scoring-response %1 rolls])
      :error-handler #(re-frame/dispatch [:bad-response %1])}))
 
-(defn score-locally [rolls identifier]
-  (re-frame/dispatch [:process-local-scoring-response (scorer/score-game rolls) identifier rolls]))
+(defn score-locally [rolls]
+  (re-frame/dispatch [:process-local-scoring-response (scorer/score-game {:rolls rolls}) rolls]))
 
 (re-frame/register-handler
   :score-game
-  (fn [db [_ rolls identifier]]
-    (score-remotely rolls identifier)
+  (fn [db [_ rolls]]
+    (println "rolls to score: " rolls)
+    (score-remotely rolls)
     (-> db
       (assoc :loading? true)
       (assoc :error false))))
@@ -107,35 +86,29 @@
 
 (re-frame/register-handler
   :process-local-scoring-response
-  (fn [db [_ result identifier rolls]]
-    (println "response: " response)
-    (println "identifier " identifier)
-    (println "rolls " rolls)
-    (println "folded " (either/fold result identity identity))
-      (-> db
-        (assoc :loading? false)
-        (assoc-in [:roll-validities rolls] result)
-        (assoc-in [:games identifier :score] (either/fold result identity identity)))))
+  (fn [db [_ result rolls]]
+    (-> db
+      (assoc :loading? false)
+      (assoc-in [:roll-validities rolls] result))))
 
 (re-frame/register-handler
   :process-scoring-response
-  (fn [db [_ response identifier rolls]]
-    (let [right (get (js->clj response) "value")
-          left (get (js->clj response) "errors")]
+  (fn [db [_ result rolls]]
+    (println "end: " result)
+    (println "rolls at end: " rolls)
       (-> db
         (assoc :loading? false)
-        (assoc-in [:roll-validities rolls] (if right (either/Right right) (either/Left left)))
-        (assoc-in [:games identifier :score] (or right (first left)))))))
+        (assoc-in [:roll-validities rolls] (response-to-result result)))))
 
 (re-frame/register-handler
   :roll
   (fn [db [_ rolls name identifier]]
     (ajax.core/GET
-      (str "http://localhost:8000/games/" identifier "/rolls/new")
+      (str "http://localhost:8000/games/rolls/new")
       {:params {:rolls (clojure.string/join "&rolls=" rolls) :name name}
        :format :json
        :headers {"Content-Type" "application/json"}
-       :handler #(re-frame/dispatch [:process-rolling-response %1])
+       :handler #(re-frame/dispatch [:process-rolling-response %1 identifier])
        :error-handler #(re-frame/dispatch [:bad-response %1])})
     (-> db
       (assoc :loading? true)
@@ -143,11 +116,10 @@
 
 (re-frame/register-handler
   :process-rolling-response
-  (fn [db [_ response]]
+  (fn [db [_ response identifier]]
     (let [game (get (js->clj response) "value")
-          identifier (get game "identifier")
-          key-game (get (normalize-game game) identifier)]
-      (re-frame/dispatch [:score-game (:rolls key-game) identifier])
+          key-game (clojure.walk/keywordize-keys game)]
+      (re-frame/dispatch [:score-game (:rolls key-game)])
       (-> db
         (assoc :loading? false)
         (assoc-in [:games identifier] key-game)))))

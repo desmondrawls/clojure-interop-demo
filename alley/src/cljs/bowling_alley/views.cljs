@@ -50,7 +50,7 @@
         on-click (fn [name-input rolls-input]
                    (when-not (or (empty? name-input) (empty? rolls-input))
                      (re-frame/dispatch [:set-inputs (.getTime (js/Date.)) rolls-input name-input true])
-                     (re-frame/dispatch [:set-rolls (parse-rolls rolls-input) name-input (.toString (random-uuid))])))]
+                     (re-frame/dispatch [:score-game (parse-rolls rolls-input)])))]
     (fn []
       [:div
        [:div.input-group
@@ -89,14 +89,21 @@
                    [:h1.red "UH-OH something went wrong. Are you trying to do microservices?"])))])))
 
 (defn game
-  [game]
+  [validities game]
   (let [name (:name (second game))
         rolls (:rolls (second game))
-        score (:score (second game))
-        identifier (first game)
-        valid? (not (or (empty? identifier) (empty? name) (nil? score)))
-        on-save (fn [_] (when valid? (re-frame/dispatch [:save-game rolls name identifier])))
-        on-roll (fn [_] (when valid? (re-frame/dispatch [:roll rolls name identifier])))]
+        score (either/fold (validity validities rolls) identity identity)
+        global-identifier (:identifier (second game))
+        local-identifier (first game)
+        save-local-game (fn []
+                          (let [new-global-identifier (.toString (random-uuid))]
+                            (re-frame/dispatch [:identify-game local-identifier new-global-identifier])
+                            (re-frame/dispatch [:save-game rolls name new-global-identifier])))
+        on-save (fn [_]
+                  (if global-identifier
+                    (re-frame/dispatch [:save-game rolls name global-identifier])
+                    (save-local-game)))
+        on-roll (fn [_] (re-frame/dispatch [:roll rolls name local-identifier]))]
     [:li.flex-content
      [:h2 name]
      [:span.input-group-btn.mr-1
@@ -110,13 +117,26 @@
      [:h3 (str "rolls " (clojure.string/join "," rolls))]
      [:h5 (str "score " score)]]))
 
+(defn map-values [m f]
+  (into {} (for [[k v] m] [k (f v)])))
+
+(defn has? [collection member]
+  (some #(= % member) collection))
+
+(defn all-games [inputs validities games]
+  (let [submitted-inputs (filter #(-> % second :submitted true?) inputs)
+        inputs-not-in-games (filter #(not (has? (keys games) (first %))) submitted-inputs)
+        parsed-inputs (map-values inputs-not-in-games #(assoc-in % [:rolls] (parse-rolls (:rolls %))))]
+    (concat games parsed-inputs)))
+
 (defn games
   []
   (fn []
     (let [games (re-frame/subscribe [:games])
+          inputs (re-frame/subscribe [:inputs])
           validities (re-frame/subscribe [:roll-validities])]
       [:ul.flex-container
-       (map game (valid-games @validities @games))])))
+       (map (partial game @validities) (valid-games @validities (all-games @inputs @validities @games)))])))
 
 (defn navbar
   []

@@ -34,18 +34,18 @@ class BowlingController(val identifyGame: (identifier: UUID) -> Outcome<Game, Co
         gameSaver.save(Game(rolls, name, identifier))
     }
 
-    @GetMapping("/games/{identifier}/score")
+    @GetMapping("/games/score")
     @ResponseBody
-    fun score(@PathVariable identifier: String,
-              @RequestParam name: String,
-              @RequestParam rolls: List<Int>) =
-            scorer.score(Game(rolls, name, UUID.fromString(identifier)))
+    fun score(@RequestParam name: String,
+              @RequestParam rolls: List<Int>): Outcome<Int, List<BowlingFailures>> {
+        Thread.sleep(1000)
+        return scorer.score(Game(rolls, name))
+    }
 
-    @GetMapping("/games/{identifier}/rolls/new")
+    @GetMapping("/games/rolls/new")
     @ResponseBody
-    fun new(@PathVariable identifier: String,
-            @RequestParam name: String,
+    fun new(@RequestParam name: String,
             @RequestParam rolls: List<Int>,
             @RequestParam(value = "pins", required = false) pins: Int?) =
-            roll(Game(rolls, name, (UUID.fromString(identifier))), pins)
+            roll(Game(rolls, name), pins)
 }

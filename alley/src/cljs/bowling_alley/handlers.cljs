@@ -2,6 +2,7 @@
   (:require [ajax.core :refer [GET]]
             [re-frame.core :as re-frame]
             [bowling-alley.db :as db]
+            [bowling-alley.scorer :as scorer]
             [bowling-alley.either :as either]))
 
 (enable-console-print!)
@@ -83,19 +84,38 @@
       (assoc-in [:games identifier :rolls] rolls)
       (assoc-in [:games identifier :name] name))))
 
+(defn score-remotely [rolls identifier]
+  (ajax.core/GET
+    (str "http://localhost:8000/games/" identifier "/score")
+    {:params {:rolls (clojure.string/join "&rolls=" rolls) :name "yo"}
+     :format :json
+     :headers {"Content-Type" "text/plain"}
+     :handler #(re-frame/dispatch [:process-scoring-response %1 identifier rolls])
+     :error-handler #(re-frame/dispatch [:bad-response %1])}))
+
+(defn score-locally [rolls identifier]
+  (re-frame/dispatch [:process-local-scoring-response (scorer/score-game rolls) identifier rolls]))
+
 (re-frame/register-handler
   :score-game
   (fn [db [_ rolls identifier]]
-    (ajax.core/GET
-      (str "http://localhost:8000/games/" identifier "/score")
-      {:params {:rolls (clojure.string/join "&rolls=" rolls) :name "yo"}
-       :format :json
-       :headers {"Content-Type" "text/plain"}
-       :handler #(re-frame/dispatch [:process-scoring-response %1 identifier rolls])
-       :error-handler #(re-frame/dispatch [:bad-response %1])})
+    (score-remotely rolls identifier)
     (-> db
       (assoc :loading? true)
       (assoc :error false))))
+
+
+(re-frame/register-handler
+  :process-local-scoring-response
+  (fn [db [_ result identifier rolls]]
+    (println "response: " response)
+    (println "identifier " identifier)
+    (println "rolls " rolls)
+    (println "folded " (either/fold result identity identity))
+      (-> db
+        (assoc :loading? false)
+        (assoc-in [:roll-validities rolls] result)
+        (assoc-in [:games identifier :score] (either/fold result identity identity)))))
 
 (re-frame/register-handler
   :process-scoring-response

@@ -11,14 +11,24 @@
    :SCORING_MIDFRAME "You have to start on frame."
    :INVALID_NAME_MISSING "You need a name."})
 
-(defn valid-game? [validity]
-  (either/fold validity (fn [errors] (or (= errors [:UNKNOWN]) (= errors [:MIDFRAME]))) (fn [_] true)))
-
 (defn parse-rolls
   [rolls]
   (if (empty? rolls)
     []
     (map js/parseInt (clojure.string/split rolls #","))))
+
+(defn validity [validities rolls]
+  (or (get validities rolls) (either/Left [:UNKNOWN])))
+
+(defn valid-game? [validity]
+  (either/fold validity (fn [errors] (= errors [:MIDFRAME])) (fn [_] true)))
+
+(defn valid-games [validities games]
+  (filter #(->> %
+             second
+             :rolls
+             (validity validities)
+             valid-game?) games))
 
 (defn show-error [error]
   [:h2.red.underline (get error-messages (keyword error))])
@@ -30,8 +40,7 @@
         inputs (re-frame/subscribe [:inputs])
         roll-validities (re-frame/subscribe [:roll-validities])
         most-recent (fn [inputs] (->> (keys inputs) sort last (get inputs)))
-        most-recent-validity (fn [inputs validities] (let [rolls (:rolls (most-recent inputs))]
-                                                       (or (get validities (parse-rolls rolls)) (either/Left [:UNKNOWN]))))
+        most-recent-validity (fn [inputs validities] (validity validities (parse-rolls (:rolls (most-recent inputs)))))
         most-recent-input (fn [inputs validities field default] (let [most-recent (most-recent inputs)]
                                                                   (if (and (:submitted most-recent) (either/right? (most-recent-validity inputs validities)))
                                                                     default
@@ -58,7 +67,10 @@
                                           :on-change #(on-change (most-recent-input @inputs @roll-validities :name "") (-> % .-target .-value))}]
            [:span.input-group-btn.col-lg-2
             [:button.btn.btn-default {:type "button"
-                                      :on-click (fn [_] (when-not @loading? (on-click (:name (most-recent @inputs)) (:rolls (most-recent @inputs)))))}
+                                      :on-click (fn [_] (when-not @loading?
+                                                          (on-click
+                                                            (most-recent-input @inputs @roll-validities :name "")
+                                                            (most-recent-input @inputs @roll-validities :rolls ""))))}
              "Score"]]]]]]
        [:div.red (str "ROLLS: " (most-recent-input @inputs @roll-validities :rolls ""))]
        [:div.red (str "NAME: " (most-recent-input @inputs @roll-validities :name ""))]
@@ -102,10 +114,9 @@
   []
   (fn []
     (let [games (re-frame/subscribe [:games])
-          valid-games (filter (comp validator/valid-game? second) @games)]
-      (println "games: " games)
+          validities (re-frame/subscribe [:roll-validities])]
       [:ul.flex-container
-       (map game valid-games)])))
+       (map game (valid-games @validities @games))])))
 
 (defn navbar
   []

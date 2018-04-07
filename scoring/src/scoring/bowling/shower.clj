@@ -32,6 +32,5 @@
 (defn -scorer
   []
   (reify ScoreGameUseCase
-    (score [this game]
-      (let [local-game {:rolls (.getRolls game) :id (.getIdentifier game) :name (.getName game)}]
-        (either-to-outcome (scorer/score-game local-game))))))
+    (score [this rolls]
+      (either-to-outcome (scorer/score-game rolls)))))

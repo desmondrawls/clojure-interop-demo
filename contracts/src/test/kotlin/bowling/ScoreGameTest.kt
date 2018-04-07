@@ -8,7 +8,7 @@ import java.util.*
 class ScoreGameTest {
     @Test
     fun negativePins() {
-        val terribleRoll = Game(listOf(-1))
+        val terribleRoll = listOf(-1)
         val expectedScore: Outcome<Int, BowlingFailures> = Failure(listOf(BowlingFailures.INVALID_ROLL_NEGATIVE))
 
         val score = scoreGame(terribleRoll)
@@ -18,7 +18,7 @@ class ScoreGameTest {
 
     @Test
     fun moreThanTenPinsInARoll() {
-        val amazingRoll = Game(listOf(11))
+        val amazingRoll = listOf(11)
         val expectedScore: Outcome<Int, BowlingFailures> = Failure(listOf(BowlingFailures.INVALID_ROLL_TOO_HIGH))
 
         val score = scoreGame(amazingRoll)
@@ -28,7 +28,7 @@ class ScoreGameTest {
 
     @Test
     fun mixedValidityRolls() {
-        val terribleRoll = Game(listOf(9, -1, 4, 5, 6))
+        val terribleRoll = listOf(9, -1, 4, 5, 6)
         val expectedScore: Outcome<Int, BowlingFailures> = Failure(listOf(BowlingFailures.INVALID_ROLL_NEGATIVE))
 
         val score = scoreGame(terribleRoll)
@@ -38,7 +38,7 @@ class ScoreGameTest {
 
     @Test
     fun gutterBall() {
-        val gutterBall = Game(listOf(0))
+        val gutterBall = listOf(0)
         val expectedScore: Outcome<Int, BowlingFailures> = Failure(listOf(BowlingFailures.SCORING_MIDFRAME))
 
         val score = scoreGame(gutterBall)
@@ -48,7 +48,7 @@ class ScoreGameTest {
 
     @Test
     fun gutterFrame() {
-        val gutterFrame = Game(listOf(0, 0))
+        val gutterFrame = listOf(0, 0)
         val expectedScore: Outcome<Int, BowlingFailures> = Success(0)
 
         val score = scoreGame(gutterFrame)
@@ -58,7 +58,7 @@ class ScoreGameTest {
 
     @Test
     fun spareFrame() {
-        val spareFrame = Game(listOf(1, 9))
+        val spareFrame = listOf(1, 9)
         val expectedScore: Outcome<Int, BowlingFailures> = Success(10)
 
         val score = scoreGame(spareFrame)
@@ -68,7 +68,7 @@ class ScoreGameTest {
 
     @Test
     fun strikeFrame() {
-        val gutterFrame = Game(listOf(10))
+        val gutterFrame = listOf(10)
         val expectedScore: Outcome<Int, BowlingFailures> = Success(10)
 
         val score = scoreGame(gutterFrame)
@@ -78,7 +78,7 @@ class ScoreGameTest {
 
     @Test
     fun gutterGame() {
-        val gutterGame: Game = rollMany(Game(), 0, 20)
+        val gutterGame: List<Int> = rollMany(emptyList(), 0, 20)
         val expectedScore: Outcome<Int, BowlingFailures> = Success(0)
 
         val score = scoreGame(gutterGame)
@@ -88,8 +88,8 @@ class ScoreGameTest {
 
     @Test
     fun onePinGame() {
-        val badStart: Game = rollMany(Game(), 0, 19)
-        val onePinner: Game = mustRoll(badStart, 1)
+        val badStart: List<Int> = rollMany(emptyList(), 0, 19)
+        val onePinner: List<Int> = mustRoll(badStart, 1)
         val expectedScore: Outcome<Int, BowlingFailures> = Success(1)
 
         val score = scoreGame(onePinner)
@@ -99,7 +99,7 @@ class ScoreGameTest {
 
     @Test
     fun allDeucesGame() {
-        val deuces: Game = rollMany(Game(), 2, 20)
+        val deuces: List<Int> = rollMany(emptyList(), 2, 20)
         val expectedScore: Outcome<Int, BowlingFailures> = Success(40)
 
         val score = scoreGame(deuces)
@@ -109,7 +109,7 @@ class ScoreGameTest {
 
     @Test
     fun tooManyRolls() {
-        val tooManyRolls: Game = rollMany(Game(), 2, 99)
+        val tooManyRolls: List<Int> = rollMany(emptyList(), 2, 99)
         val expectedScore: Outcome<Int, BowlingFailures> = Success(40)
 
         val score = scoreGame(tooManyRolls)
@@ -119,8 +119,8 @@ class ScoreGameTest {
 
     @Test
     fun oneSpareGame() {
-        val promisingStart: Game = rollSequence(Game(), listOf(8,2,5))
-        val badFinish: Game = rollMany(promisingStart, 0, 17)
+        val promisingStart: List<Int> = rollSequence(emptyList(), listOf(8,2,5))
+        val badFinish: List<Int> = rollMany(promisingStart, 0, 17)
         val expectedScore: Outcome<Int, BowlingFailures> = Success(20)
 
         val score = scoreGame(badFinish)
@@ -130,8 +130,8 @@ class ScoreGameTest {
 
     @Test
     fun closingSpareGame() {
-        val badStart: Game = rollMany(Game(), 0, 18)
-        val closingSpare: Game = rollMany(badStart, 5, 3)
+        val badStart: List<Int> = rollMany(emptyList(), 0, 18)
+        val closingSpare: List<Int> = rollMany(badStart, 5, 3)
         val expectedScore: Outcome<Int, BowlingFailures> = Success(20)
 
         val score = scoreGame(closingSpare)
@@ -141,8 +141,8 @@ class ScoreGameTest {
 
     @Test
     fun oneStrikeGame() {
-        val promisingStart: Game = rollSequence(Game(), listOf(10,2,5))
-        val badFinish: Game = rollMany(promisingStart, 0, 16)
+        val promisingStart: List<Int> = rollSequence(emptyList(), listOf(10,2,5))
+        val badFinish: List<Int> = rollMany(promisingStart, 0, 16)
         val expectedScore: Outcome<Int, BowlingFailures> = Success(24)
 
         val score = scoreGame(badFinish)
@@ -152,7 +152,7 @@ class ScoreGameTest {
 
     @Test
     fun perfectGame() {
-        val perfection: Game = rollMany(Game(), 10, 12)
+        val perfection: List<Int> = rollMany(emptyList(), 10, 12)
         val expectedScore: Outcome<Int, BowlingFailures> = Success(300)
 
         val score = scoreGame(perfection)
@@ -160,22 +160,22 @@ class ScoreGameTest {
         assert.that(score, equalTo(expectedScore))
     }
 
-    private fun rollMany(game: Game, pins: Int, rolls: Int): Game {
-        return rollSequence(game, Collections.nCopies(rolls, pins))
+    private fun rollMany(rolls: List<Int>, pins: Int, repititions: Int): List<Int> {
+        return rollSequence(rolls, Collections.nCopies(repititions, pins))
     }
 
-    private fun rollSequence(game: Game, pins: List<Int>): Game {
-        fun rollAgain(game: Game, pins: List<Int>): Game {
+    private fun rollSequence(rolls: List<Int>, pins: List<Int>): List<Int> {
+        fun rollAgain(rolls: List<Int>, pins: List<Int>): List<Int> {
             if (pins.isEmpty()) {
-                return game
+                return rolls
             } else {
-                return rollAgain(mustRoll(game, pins[0]), pins.drop(1))
+                return rollAgain(mustRoll(rolls, pins[0]), pins.drop(1))
             }
         }
-        return rollAgain(game, pins)
+        return rollAgain(rolls, pins)
     }
 
-    private fun mustRoll(game: Game, pins: Int): Game {
-        return roll(game, pins).fold({game -> game}, {_ -> throw RuntimeException()})
+    private fun mustRoll(rolls: List<Int>, pins: Int): List<Int> {
+        return roll(rolls, pins).fold({outcome -> outcome}, {_ -> throw RuntimeException()})
     }
 }

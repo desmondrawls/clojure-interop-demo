@@ -36,16 +36,13 @@ class BowlingController(val identifyGame: (identifier: UUID) -> Outcome<Game, Co
 
     @GetMapping("/games/score")
     @ResponseBody
-    fun score(@RequestParam name: String,
-              @RequestParam rolls: List<Int>): Outcome<Int, List<BowlingFailures>> {
+    fun score(@RequestParam rolls: List<Int>): Outcome<Int, List<BowlingFailures>> {
         Thread.sleep(1000)
-        return scorer.score(Game(rolls, name))
+        return scorer.score(rolls)
     }
 
     @GetMapping("/games/rolls/new")
     @ResponseBody
-    fun new(@RequestParam name: String,
-            @RequestParam rolls: List<Int>,
-            @RequestParam(value = "pins", required = false) pins: Int?) =
-            roll(Game(rolls, name), pins)
+    fun new(@RequestParam rolls: List<Int>) =
+            roll(rolls)
 }

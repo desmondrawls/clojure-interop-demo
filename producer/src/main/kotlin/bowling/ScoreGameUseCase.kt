@@ -2,5 +2,5 @@ package bowling
 
 
 interface ScoreGameUseCase {
-    fun score(game: Game): Outcome<Int, List<BowlingFailures>>
+    fun score(rolls: List<Int>): Outcome<Int, List<BowlingFailures>>
 }

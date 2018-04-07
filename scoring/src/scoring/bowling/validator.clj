@@ -30,20 +30,19 @@
       (either/Left [:INVALID_FRAME_TOO_HIGH])
       (either/Right rolls))))
 
-(defn validate-game [game]
+(defn validate-game [rolls]
   (let [validation (either/add-all
-                     [(validate-name (:name game))
-                      (validate-frames (:rolls game))
-                      (validate-rolls (:rolls game))])]
+                     [(validate-frames rolls)
+                      (validate-rolls rolls)])]
     (either/fold validation
       (fn [errors]
         (either/Left errors))
-      (fn [_] (either/Right game)))))
+      (fn [_] (either/Right rolls)))))
 
 (defn valid-game?
-  [game]
-  (either/right? (validate-game game)))
+  [rolls]
+  (either/right? (validate-game rolls)))
 
-(defn validate-games [games]
-  (let [outcomes (map validate-game games)]
+(defn validate-games [rolls]
+  (let [outcomes (map validate-game rolls)]
     (reduce either/add (either/Right []) outcomes)))

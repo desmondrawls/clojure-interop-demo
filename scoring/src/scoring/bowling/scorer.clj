@@ -37,12 +37,12 @@
             (scoreBoring)))))))
 
 (defn score-game
-  [game]
-  (either/fold (validator/validate-game game)
+  [rolls]
+  (either/fold (validator/validate-game rolls)
     (fn [x]
       (either/Left x))
-    (fn [_] (score-from-frame (:rolls game) 0 0 0))))
+    (fn [_] (score-from-frame rolls 0 0 0))))
 
 (defn -score_game
   [rolls]
-  (score-game {:rolls rolls :id "the fonz"}))
+  (score-game rolls))

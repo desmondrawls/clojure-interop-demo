@@ -7,13 +7,8 @@ fun randomRoll(rolls: List<Int>): Int =
         Random().nextInt(10)
     } else Random().nextInt(10 - rolls.last())
 
-fun roll(game: Game, pins: Int?): Outcome<Game, BowlingFailures> =
-        if (pins != null)
-            roll(game, pins)
-        else roll(game)
-
-private fun roll(game: Game, pins: Int = randomRoll(game.rolls)): Outcome<Game, BowlingFailures> =
+fun roll(rolls: List<Int>, pins: Int = randomRoll(rolls)): Outcome<List<Int>, BowlingFailures> =
    validateRoll(pins)
            .fold({pins ->
-               Success<Game, BowlingFailures>(Game(listOf(game.rolls, listOf(pins)).flatten(), game.name, game.identifier))},
-                   {errors -> Failure<Game, BowlingFailures>(errors)})
+               Success<List<Int>, BowlingFailures>(listOf(rolls, listOf(pins)).flatten())},
+                   {errors -> Failure<List<Int>, BowlingFailures>(errors)})

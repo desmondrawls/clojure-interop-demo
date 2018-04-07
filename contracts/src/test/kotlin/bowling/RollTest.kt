@@ -8,52 +8,51 @@ import java.util.*
 class RollTest {
     @Test
     fun moreThanTenPins() {
-        val expectedRoll: Outcome<Game, BowlingFailures> = Failure(listOf(BowlingFailures.INVALID_ROLL_TOO_HIGH))
+        val expectedRoll: Outcome<List<Int>, BowlingFailures> = Failure(listOf(BowlingFailures.INVALID_ROLL_TOO_HIGH))
 
-        val roll = roll(Game(), 11)
+        val roll = roll(emptyList(), 11)
 
         assert.that(roll, equalTo(expectedRoll))
     }
 
     @Test
     fun negativePins() {
-        val expectedRoll: Outcome<Game, BowlingFailures> = Failure(listOf(BowlingFailures.INVALID_ROLL_NEGATIVE))
+        val expectedRoll: Outcome<List<Int>, BowlingFailures> = Failure(listOf(BowlingFailures.INVALID_ROLL_NEGATIVE))
 
-        val roll = roll(Game(), -1)
+        val roll = roll(emptyList(), -1)
 
         assert.that(roll, equalTo(expectedRoll))
     }
 
     @Test
     fun valid() {
-        val testIdentifier = UUID.randomUUID()
-        val expectedRoll: Outcome<Game, BowlingFailures> = Success(Game(listOf(1, 5), "boring", testIdentifier))
+        val expectedRoll: Outcome<List<Int>, BowlingFailures> = Success(listOf(1, 5))
 
-        val roll = roll(Game(listOf(1), "boring", testIdentifier), 5)
+        val roll = roll(listOf(1), 5)
 
         assert.that(roll, equalTo(expectedRoll))
     }
 
     @Test
     fun random() {
-        val roll = roll(Game(listOf(1,2)), null)
+        val roll = roll(listOf(1,2))
 
         assert.that(roll, isSuccess())
-        assert.that(roll, hasSuccessValue({ value -> value.rolls.size == 3}))
-        assert.that(roll, hasSuccessValue({ value -> value.rolls[0] == 1}))
-        assert.that(roll, hasSuccessValue({ value -> value.rolls[1] == 2}))
-        assert.that(roll, hasSuccessValue({ value -> value.rolls[2] >= 0}))
-        assert.that(roll, hasSuccessValue({ value -> value.rolls[2] <= 10}))
+        assert.that(roll, hasSuccessValue({ value -> value.size == 3}))
+        assert.that(roll, hasSuccessValue({ value -> value[0] == 1}))
+        assert.that(roll, hasSuccessValue({ value -> value[1] == 2}))
+        assert.that(roll, hasSuccessValue({ value -> value[2] >= 0}))
+        assert.that(roll, hasSuccessValue({ value -> value[2] <= 10}))
     }
 
     @Test
     fun randomMidframe() {
-        val roll = roll(Game(listOf(10,9)), null)
+        val roll = roll(listOf(10,9))
 
         assert.that(roll, isSuccess())
-        assert.that(roll, hasSuccessValue({ value -> value.rolls.size == 3}))
-        assert.that(roll, hasSuccessValue({ value -> value.rolls[0] == 10}))
-        assert.that(roll, hasSuccessValue({ value -> value.rolls[1] == 9}))
-        assert.that(roll, hasSuccessValue({ value -> value.rolls[2] <= 1}))
+        assert.that(roll, hasSuccessValue({ value -> value.size == 3}))
+        assert.that(roll, hasSuccessValue({ value -> value[0] == 10}))
+        assert.that(roll, hasSuccessValue({ value -> value[1] == 9}))
+        assert.that(roll, hasSuccessValue({ value -> value[2] <= 1}))
     }
 }

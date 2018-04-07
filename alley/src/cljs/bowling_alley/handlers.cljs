@@ -59,13 +59,12 @@
 (defn response-to-result [response]
   (let [right (get (js->clj response) "value")
         left (get (js->clj response) "errors")]
-    (println "to: " response)
     (if right (either/Right right) (either/Left left))))
 
 (defn score-remotely [rolls]
   (ajax.core/GET
     (str "http://localhost:8000/games/score")
-    {:params {:rolls (clojure.string/join "&rolls=" rolls) :name "yo"}
+    {:params {:rolls (clojure.string/join "&rolls=" rolls)}
      :format :json
      :headers {"Content-Type" "text/plain"}
      :handler #(re-frame/dispatch [:process-scoring-response %1 rolls])
@@ -77,7 +76,6 @@
 (re-frame/register-handler
   :score-game
   (fn [db [_ rolls]]
-    (println "rolls to score: " rolls)
     (score-remotely rolls)
     (-> db
       (assoc :loading? true)
@@ -94,21 +92,19 @@
 (re-frame/register-handler
   :process-scoring-response
   (fn [db [_ result rolls]]
-    (println "end: " result)
-    (println "rolls at end: " rolls)
-      (-> db
-        (assoc :loading? false)
-        (assoc-in [:roll-validities rolls] (response-to-result result)))))
+    (-> db
+      (assoc :loading? false)
+      (assoc-in [:roll-validities rolls] (response-to-result result)))))
 
 (re-frame/register-handler
   :roll
   (fn [db [_ rolls name identifier]]
     (ajax.core/GET
       (str "http://localhost:8000/games/rolls/new")
-      {:params {:rolls (clojure.string/join "&rolls=" rolls) :name name}
+      {:params {:rolls (clojure.string/join "&rolls=" rolls)}
        :format :json
        :headers {"Content-Type" "application/json"}
-       :handler #(re-frame/dispatch [:process-rolling-response %1 identifier])
+       :handler #(re-frame/dispatch [:process-rolling-response %1 identifier name])
        :error-handler #(re-frame/dispatch [:bad-response %1])})
     (-> db
       (assoc :loading? true)
@@ -116,13 +112,12 @@
 
 (re-frame/register-handler
   :process-rolling-response
-  (fn [db [_ response identifier]]
-    (let [game (get (js->clj response) "value")
-          key-game (clojure.walk/keywordize-keys game)]
-      (re-frame/dispatch [:score-game (:rolls key-game)])
+  (fn [db [_ response identifier name]]
+    (let [rolls (get (js->clj response) "value")]
+      (re-frame/dispatch [:score-game rolls])
       (-> db
         (assoc :loading? false)
-        (assoc-in [:games identifier] key-game)))))
+        (assoc-in [:games identifier] {:rolls rolls :name name})))))
 
 (re-frame/register-handler
   :fetch-games

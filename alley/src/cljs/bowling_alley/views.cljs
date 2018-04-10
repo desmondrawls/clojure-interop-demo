@@ -92,7 +92,7 @@
   [validities game]
   (let [name (:name (second game))
         rolls (:rolls (second game))
-        score (either/fold (validity validities rolls) identity identity)
+        score (either/fold (validity validities rolls) "" identity)
         global-identifier (:identifier (second game))
         local-identifier (first game)
         save-local-game (fn []
@@ -127,7 +127,10 @@
   (let [submitted-inputs (filter #(-> % second :submitted true?) inputs)
         inputs-not-in-games (filter #(not (has? (keys games) (first %))) submitted-inputs)
         parsed-inputs (map-values inputs-not-in-games #(assoc-in % [:rolls] (parse-rolls (:rolls %))))]
-    (concat games parsed-inputs)))
+    (concat games (valid-games validities parsed-inputs))))
+
+(defn sorted-games [inputs validities games]
+  (sort-by (comp :name second) (all-games inputs validities games)))
 
 (defn games
   []
@@ -136,7 +139,7 @@
           inputs (re-frame/subscribe [:inputs])
           validities (re-frame/subscribe [:roll-validities])]
       [:ul.flex-container
-       (map (partial game @validities) (valid-games @validities (all-games @inputs @validities @games)))])))
+       (map (partial game @validities) (sorted-games @inputs @validities @games))])))
 
 (defn navbar
   []

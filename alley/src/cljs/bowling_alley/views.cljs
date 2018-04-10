@@ -72,10 +72,6 @@
                                                             (most-recent-input @inputs @roll-validities :name "")
                                                             (most-recent-input @inputs @roll-validities :rolls ""))))}
              "Score"]]]]]]
-       [:div.red (str "ROLLS: " (most-recent-input @inputs @roll-validities :rolls ""))]
-       [:div.red (str "NAME: " (most-recent-input @inputs @roll-validities :name ""))]
-       [:div.red (str "SUBMITTED: " (most-recent-input @inputs @roll-validities :submitted false))]
-       [:div.red (str "MOST RECENT VALIDITY: " (either/fold (most-recent-validity @inputs @roll-validities) identity identity))]
        (either/fold (most-recent-validity @inputs @roll-validities)
          (fn [errors]
            (when (and

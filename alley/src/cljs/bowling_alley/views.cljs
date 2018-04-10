@@ -1,7 +1,7 @@
 (ns bowling-alley.views
   (:require [re-frame.core :as re-frame]
             [bowling-alley.validator :as validator]
-            [bowling-alley.either :as either]
+            [scoring.either :as either]
             [reagent.core :as reagent]))
 
 (def error-messages

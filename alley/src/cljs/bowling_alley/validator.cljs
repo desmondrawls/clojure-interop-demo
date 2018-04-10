@@ -1,5 +1,5 @@
 (ns bowling-alley.validator
-  (:require [bowling-alley.either :as either]))
+  (:require [scoring.either :as either]))
 
 (defn validate-roll [pins]
   (if (< pins 0)

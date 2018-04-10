@@ -3,7 +3,7 @@
             [re-frame.core :as re-frame]
             [bowling-alley.db :as db]
             [bowling-alley.scorer :as scorer]
-            [bowling-alley.either :as either]))
+            [scoring.either :as either]))
 
 (enable-console-print!)
 

@@ -1,6 +1,6 @@
 (ns bowling-alley.scorer
   (:require [bowling-alley.validator :as validator]
-            [bowling-alley.either :as either]))
+            [scoring.either :as either]))
 
 (defn score-from-frame
   [rolls frame roll score]
@@ -34,12 +34,12 @@
             (scoreBoring)))))))
 
 (defn score-game
-  [game]
-  (either/fold (validator/validate-game game)
+  [rolls]
+  (either/fold (validator/validate-game rolls)
     (fn [x]
       (either/Left x))
-    (fn [_] (score-from-frame (:rolls game) 0 0 0))))
+    (fn [_] (score-from-frame rolls 0 0 0))))
 
 (defn -score_game
   [rolls]
-  (score-game {:rolls rolls :id "the fonz"}))
+  (score-game rolls))

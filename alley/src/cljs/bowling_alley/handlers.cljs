@@ -67,34 +67,26 @@
     {:params {:rolls (clojure.string/join "&rolls=" rolls)}
      :format :json
      :headers {"Content-Type" "text/plain"}
-     :handler #(re-frame/dispatch [:process-scoring-response %1 rolls])
+     :handler #(re-frame/dispatch [:process-scoring-result (response-to-result %1) rolls])
      :error-handler #(re-frame/dispatch [:bad-response %1])}))
 
 (defn score-locally [rolls]
-  (re-frame/dispatch [:process-local-scoring-response (scorer/score-game {:rolls rolls}) rolls]))
+  (re-frame/dispatch [:process-scoring-result (scorer/score-game rolls) rolls]))
 
 (re-frame/register-handler
   :score-game
   (fn [db [_ rolls]]
-    (score-remotely rolls)
+    (score-locally rolls)
     (-> db
       (assoc :loading? true)
       (assoc :error false))))
 
-
 (re-frame/register-handler
-  :process-local-scoring-response
+  :process-scoring-result
   (fn [db [_ result rolls]]
     (-> db
       (assoc :loading? false)
       (assoc-in [:roll-validities rolls] result))))
-
-(re-frame/register-handler
-  :process-scoring-response
-  (fn [db [_ result rolls]]
-    (-> db
-      (assoc :loading? false)
-      (assoc-in [:roll-validities rolls] (response-to-result result)))))
 
 (re-frame/register-handler
   :roll

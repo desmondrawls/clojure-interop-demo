@@ -15,11 +15,6 @@
       (let [current-outcome (validate-roll (first remaining-rolls))]
         (recur (either/add current-outcome cumulative-outcome) (rest remaining-rolls))))))
 
-(defn validate-name [name]
-  (if (empty? name)
-    (either/Left [:INVALID_NAME_MISSING])
-    (either/Right [name])))
-
 (defn validate-frames [rolls]
   (let [non-strikes (filter #(not= 10 %) rolls)
         some-frame-too-high (->> non-strikes
@@ -30,20 +25,12 @@
       (either/Left [:INVALID_FRAME_TOO_HIGH])
       (either/Right rolls))))
 
-(defn validate-game [game]
+(defn validate-game [rolls]
   (let [validation (either/add-all
-                     [(validate-frames (:rolls game))
-                      ;(validate-name (:name game))
-                      (validate-rolls (:rolls game))])]
-    (either/fold validation
-      (fn [errors]
-        (either/Left errors))
-      (fn [_] (either/Right game)))))
+                     [(validate-frames rolls)
+                      (validate-rolls rolls)])]
+    (either/map' validation (fn [_] rolls))))
 
 (defn valid-game?
-  [game]
-  (either/right? (validate-game game)))
-
-(defn validate-games [games]
-  (let [outcomes (map validate-game games)]
-    (reduce either/add (either/Right []) outcomes)))
+  [rolls]
+  (either/right? (validate-game rolls)))

@@ -117,3 +117,18 @@ To load changes:
     curl -H "Content-Type: application/json" -X POST -d '{"identifier":"30e2d1fe-2681-44df-a967-4478e10a651b", "rolls":["1", "9", "5", "5", "1", "99", "2"]}' https://bowling-sink.cfapps.io/games
     curl https://bowling-source.cfapps.io/games/30e2d1fe-2681-44df-a967-4478e10a651b
     curl "https://bowling-transform.cfapps.io/games/30e2d1fe-2681-44df-a967-4478e10a651b/score?rolls=1&rolls=9&rolls=5&rolls=5&rolls=99&rolls=2"
+    
+### Ice box
+```
+(defn validate-name [name]
+  (if (empty? name)
+    (either/Left [:INVALID_NAME_MISSING])
+    (either/Right [name])))
+```
+
+### Useless code I still like
+```
+(defn validate-games [rolls]
+  (let [outcomes (map validate-game rolls)]
+    (reduce either/add (either/Right []) outcomes)))
+```

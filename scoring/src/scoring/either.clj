@@ -3,6 +3,12 @@
 (defn fold [either left right]
   ((:fold either) left right))
 
+(defn map' [either transform]
+  ((:map either) transform))
+
+(defn flatmap' [either transform]
+  ((:flatmap either) transform))
+
 (defn add [either other]
   ((:concat either) other))
 

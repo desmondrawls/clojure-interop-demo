@@ -8,12 +8,12 @@
 (defn show-either
   [either]
   ((:fold either)
-    #(str "{\"left\":" (json/write-str %) "}")
-    #(str "{\"right\":" (json/write-str %) "}")))
+    #(str "{\"errors\":" (json/write-str %) "}")
+    #(str "{\"value\":" (json/write-str %) "}")))
 
 (defn -show_score
   [rolls]
-  (show-either (scorer/score-game {:rolls rolls :id "1" :name "da fonz"})))
+  (show-either (scorer/score-game rolls)))
 
 (defn export-error
   [local-error]

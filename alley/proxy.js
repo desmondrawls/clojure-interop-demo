@@ -24,7 +24,7 @@ var router = http.createServer(
       proxy.web(req, res, {target: 'http://localhost:8082'})
     } else if(target.pathname.startsWith('/requests/rolls')) {
       console.log("Forwarding request to scoring function")
-      proxy.web(req, res, {target: 'http://35.193.4.148'})
+      proxy.web(req, res, {target: 'http://35.193.96.28:80'})
     } else {
       console.log("Forwarding request to the default server")
       proxy.web(req, res, {target: 'http://localhost:3449'})

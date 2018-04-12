@@ -1,0 +1,10 @@
+---
+apiVersion: projectriff.io/v1alpha1
+kind: Function
+metadata:
+  name: bowlopalooza
+spec:
+  container:
+    image: nhcnessienyc/bowlopalooza:0.0.1
+  input: rolls
+  protocol: grpc

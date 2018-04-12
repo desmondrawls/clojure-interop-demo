@@ -1,9 +1,0 @@
-apiVersion: projectriff.io/v1
-kind: Function
-metadata:
-  name: bowlzilla
-spec:
-  protocol: grpc
-  input: rolls
-  container:
-    image: nhcnessienyc/bowlzilla:0.0.1

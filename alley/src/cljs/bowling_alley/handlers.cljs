@@ -62,9 +62,9 @@
     (if right (either/Right right) (either/Left left))))
 
 (defn score-remotely [rolls]
-  (ajax.core/GET
-    (str "http://localhost:8000/games/score")
-    {:params {:rolls (clojure.string/join "&rolls=" rolls)}
+  (ajax.core/POST
+    (str "http://localhost:8000/requests/rolls")
+    {:params {:rolls rolls}
      :format :json
      :headers {"Content-Type" "text/plain"}
      :handler #(re-frame/dispatch [:process-scoring-result (response-to-result %1) rolls])
@@ -76,7 +76,7 @@
 (re-frame/register-handler
   :score-game
   (fn [db [_ rolls]]
-    (score-locally rolls)
+    (score-remotely rolls)
     (-> db
       (assoc :loading? true)
       (assoc :error false))))

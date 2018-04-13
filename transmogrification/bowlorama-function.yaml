@@ -2,9 +2,10 @@
 apiVersion: projectriff.io/v1alpha1
 kind: Function
 metadata:
-  name: bowlopalooza
+  name: bowlorama
 spec:
   container:
-    image: nhcnessienyc/bowlopalooza:0.0.1
+    image: nhcnessienyc/yoyo:0.0.3
+    imagePullPolicy: Always
   input: rolls
   protocol: grpc

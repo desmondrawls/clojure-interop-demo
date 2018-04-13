@@ -1,33 +1,24 @@
 (ns scoring.bowling.shower
-  (:gen-class :methods [^:static [show_score [Object] String]
-                        ^:static [scorer [] bowling.ScoreGameUseCase]])
+  (:gen-class :methods [^:static [scorer [] bowling.ScoreGameUseCase]])
   (:require [clojure.data.json :as json]
+            [scoring.either :as either]
             [scoring.bowling.scorer :as scorer])
-  (:import (bowling Failure Success Game CommonErrors Outcome BowlingFailures ScoreGameUseCase)))
+  (:import (bowling Failure Success BowlingFailures ScoreGameUseCase)))
 
-(defn show-either
-  [either]
-  ((:fold either)
-    #(str "{\"errors\":" (json/write-str %) "}")
-    #(str "{\"value\":" (json/write-str %) "}")))
-
-(defn -show_score
-  [rolls]
-  (show-either (scorer/score-game rolls)))
+(def error-map
+  {:MIDFRAME BowlingFailures/SCORING_MIDFRAME
+   :INVALID_ROLL_NEGATIVE BowlingFailures/INVALID_ROLL_NEGATIVE
+   :INVALID_ROLL_TOO_HIGH BowlingFailures/INVALID_ROLL_TOO_HIGH
+   :INVALID_FRAME_TOO_HIGH BowlingFailures/INVALID_FRAME_TOO_HIGH
+   :INVALID_NAME_MISSING BowlingFailures/INVALID_NAME_MISSING})
 
 (defn export-error
   [local-error]
-  (get {:MIDFRAME BowlingFailures/SCORING_MIDFRAME
-        :INVALID_ROLL_NEGATIVE BowlingFailures/INVALID_ROLL_NEGATIVE
-        :INVALID_ROLL_TOO_HIGH BowlingFailures/INVALID_ROLL_TOO_HIGH
-        :INVALID_FRAME_TOO_HIGH BowlingFailures/INVALID_FRAME_TOO_HIGH
-        :INVALID_NAME_MISSING BowlingFailures/INVALID_NAME_MISSING} local-error))
+  (get error-map local-error))
 
 (defn either-to-outcome
   [either]
-  ((:fold either)
-    #(Failure. (map export-error %))
-    #(Success. %)))
+  (either/fold either #(Failure. (map export-error %)) #(Success. %)))
 
 (defn -scorer
   []

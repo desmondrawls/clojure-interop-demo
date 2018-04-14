@@ -2,4 +2,4 @@
 applications:
 - name: bowling-source
   buildpack: https://github.com/cloudfoundry/java-buildpack.git
-  path: target/bowling_source-0.0.1-SNAPSHOT.jar
+  path: target/source-0.0.1-SNAPSHOT.jar

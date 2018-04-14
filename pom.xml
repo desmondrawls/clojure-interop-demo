@@ -7,16 +7,16 @@
     <artifactId>mirrors</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <modules>
-        <module>producer</module>
+        <module>bowling</module>
         <module>posers</module>
-        <module>recording_studio</module>
-        <module>recording_studio_beans</module>
+        <module>persistence</module>
+        <module>persistence_beans</module>
         <module>transmogrification</module>
         <module>scoring</module>
-        <module>bowling_modulith</module>
-        <module>bowling_transform</module>
-        <module>bowling_source</module>
-        <module>bowling_sink</module>
+        <module>modulith</module>
+        <module>transform</module>
+        <module>source</module>
+        <module>sink</module>
         <module>contracts</module>
     </modules>
     <packaging>pom</packaging>

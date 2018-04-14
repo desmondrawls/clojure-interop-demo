@@ -37,14 +37,14 @@
   -moz-animation: three-quarters-loader 1250ms infinite linear;
   -webkit-animation: three-quarters-loader 1250ms infinite linear;
   animation: three-quarters-loader 1250ms infinite linear;
-  border: 8px solid #38e;
+  border: 16px solid #caff2b;
   border-right-color: transparent;
-  border-radius: 16px;
+  border-radius: 32px;
   box-sizing: border-box;
   display: inline-block;
   position: relative;
   overflow: hidden;
   text-indent: -9999px;
-  width: 32px;
-  height: 32px;
+  width: 64px;
+  height: 64px;
 }

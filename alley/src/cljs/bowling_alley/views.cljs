@@ -13,9 +13,7 @@
 
 (defn parse-rolls
   [rolls]
-  (if (empty? rolls)
-    []
-    (map js/parseInt (clojure.string/split rolls #","))))
+  (map js/parseInt (clojure.string/split rolls #",")))
 
 (defn validity [validities rolls]
   (or (get validities rolls) (either/Left [:UNKNOWN])))

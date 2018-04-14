@@ -125,6 +125,17 @@ To load changes:
     (either/Left [:INVALID_NAME_MISSING])
     (either/Right [name])))
 ```
+```
+@GetMapping("/modulith/games/new")
+@ResponseBody
+fun new() = Game()
+```
+```
+@GetMapping("/modulith/games/{identifier}")
+@ResponseBody
+fun find(@PathVariable identifier: String) =
+        identifyGame(UUID.fromString(identifier))
+```
 
 ### Useless code I still like
 ```

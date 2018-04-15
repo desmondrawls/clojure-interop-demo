@@ -9,10 +9,6 @@ import scoring.shower
 
 @Configuration
 class BowlingStudioConfiguration {
-    @Bean
-    fun bowlingStudioGameIdentifier(): GameIdentifier {
-        return identifier.game_identifier()
-    }
 
     @Bean
     fun bowlingStudioGamesFetcher(): GamesFetcher {

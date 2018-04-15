@@ -3,7 +3,7 @@
 (def default-db
   {:loading? false
    :error false
-   :roll-validities {}
+   :scores {}
    :inputs {}
    :games {}})
 

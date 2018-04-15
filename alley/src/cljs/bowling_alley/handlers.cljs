@@ -61,7 +61,7 @@
   (fn [db [_ result rolls]]
     (-> db
       (assoc :loading? false)
-      (assoc-in [:roll-validities rolls] result))))
+      (assoc-in [:scores rolls] result))))
 
 (re-frame/register-handler
   :roll

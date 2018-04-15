@@ -27,7 +27,7 @@
 
 (defn score [rolls]
   (ajax.core/POST
-    (str "http://localhost:8000/requests/roll")
+    (str "http://localhost:8000/requests/rolls")
     {:params {:rolls rolls}
      :format :json
      :headers {"Content-Type" "text/plain"}

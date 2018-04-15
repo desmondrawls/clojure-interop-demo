@@ -36,7 +36,7 @@
   (let [loading? (re-frame/subscribe [:loading?])
         error? (re-frame/subscribe [:error?])
         inputs (re-frame/subscribe [:inputs])
-        roll-validities (re-frame/subscribe [:roll-validities])
+        scores (re-frame/subscribe [:scores])
         most-recent (fn [inputs] (->> (keys inputs) sort last (get inputs)))
         most-recent-validity (fn [inputs validities] (validity validities (parse-rolls (:rolls (most-recent inputs)))))
         most-recent-input (fn [inputs validities field default] (let [most-recent (most-recent inputs)]
@@ -57,23 +57,23 @@
           [:div.row.justify-content-md-center
            [:input.form-control.col-lg-3.mr-3 {:type "text"
                                                :placeholder "Enter Name"
-                                               :value (most-recent-input @inputs @roll-validities :name "")
-                                               :on-change #(on-change (-> % .-target .-value) (most-recent-input @inputs @roll-validities :rolls ""))}]
+                                               :value (most-recent-input @inputs @scores :name "")
+                                               :on-change #(on-change (-> % .-target .-value) (most-recent-input @inputs @scores :rolls ""))}]
            [:input.form-control.col-lg-6 {:type "text"
                                           :placeholder "Enter Rolls"
-                                          :value (most-recent-input @inputs @roll-validities :rolls "")
-                                          :on-change #(on-change (most-recent-input @inputs @roll-validities :name "") (-> % .-target .-value))}]
+                                          :value (most-recent-input @inputs @scores :rolls "")
+                                          :on-change #(on-change (most-recent-input @inputs @scores :name "") (-> % .-target .-value))}]
            [:span.input-group-btn.col-lg-2
             [:button.btn.btn-default {:type "button"
                                       :on-click (fn [_] (when-not @loading?
                                                           (on-click
-                                                            (most-recent-input @inputs @roll-validities :name "")
-                                                            (most-recent-input @inputs @roll-validities :rolls ""))))}
+                                                            (most-recent-input @inputs @scores :name "")
+                                                            (most-recent-input @inputs @scores :rolls ""))))}
              "Score"]]]]]]
-       (either/fold (most-recent-validity @inputs @roll-validities)
+       (either/fold (most-recent-validity @inputs @scores)
          (fn [errors]
            (when (and
-                   (most-recent-input @inputs @roll-validities :submitted false)
+                   (most-recent-input @inputs @scores :submitted false)
                    (not (= (map keyword errors) [:UNKNOWN])))
              [:div
               [:img.mt-5 {:src "styles/not_nam_rules.png"}]
@@ -131,9 +131,9 @@
   (fn []
     (let [games (re-frame/subscribe [:games])
           inputs (re-frame/subscribe [:inputs])
-          validities (re-frame/subscribe [:roll-validities])]
+          scores (re-frame/subscribe [:scores])]
       [:ul.flex-container
-       (map (partial game @validities) (sorted-games @inputs @validities @games))])))
+       (map (partial game @scores) (sorted-games @inputs @scores @games))])))
 
 (defn navbar
   []
@@ -166,8 +166,7 @@
            [rolls-input]]]]]])))
 
 (defn main-panel []
-  (let [active-panel (re-frame/subscribe [:active-panel])
-        roll-validities (re-frame/subscribe [:roll-validities])]
+  (let [active-panel (re-frame/subscribe [:active-panel])]
     (fn []
       [:div
        [navbar]

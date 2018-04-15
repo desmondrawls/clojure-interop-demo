@@ -3,9 +3,9 @@
   (:require [re-frame.core :as re-frame]))
 
 (re-frame/register-sub
-  :roll-validities
+  :scores
   (fn [db]
-    (reaction (:roll-validities @db))))
+    (reaction (:scores @db))))
 
 (re-frame/register-sub
   :games

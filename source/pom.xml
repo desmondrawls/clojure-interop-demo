@@ -109,7 +109,7 @@
             <dependencies>
                 <dependency>
                     <groupId>${project.groupId}</groupId>
-                    <artifactId>recording_studio_beans</artifactId>
+                    <artifactId>beans</artifactId>
                     <version>${project.version}</version>
                 </dependency>
             </dependencies>

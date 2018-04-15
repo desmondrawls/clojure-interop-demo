@@ -4,13 +4,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.rap.battle</groupId>
-    <artifactId>mirrors</artifactId>
+    <artifactId>clojure-interop-demo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <modules>
         <module>bowling</module>
         <module>posers</module>
         <module>persistence</module>
-        <module>persistence_beans</module>
+        <module>beans</module>
         <module>transmogrification</module>
         <module>scoring</module>
         <module>modulith</module>
@@ -21,7 +21,7 @@
     </modules>
     <packaging>pom</packaging>
 
-    <name>mirrors</name>
+    <name>clojure-interop-demo</name>
     <description>Demo project for Clojure, Datomic, Riff, Cljs, Re-frame</description>
 
     <parent>

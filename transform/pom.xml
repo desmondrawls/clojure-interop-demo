@@ -28,7 +28,7 @@
         </dependency>
         <dependency>
             <groupId>com.rap.battle</groupId>
-            <artifactId>recording_studio_beans</artifactId>
+            <artifactId>beans</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>

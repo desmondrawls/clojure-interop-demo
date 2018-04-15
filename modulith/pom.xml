@@ -27,7 +27,7 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>scoring</groupId>
+            <groupId>com.rap.battle</groupId>
             <artifactId>scoring</artifactId>
             <version>0.1.0-SNAPSHOT</version>
         </dependency>
@@ -115,7 +115,7 @@
             <dependencies>
                 <dependency>
                     <groupId>${project.groupId}</groupId>
-                    <artifactId>recording_studio_beans</artifactId>
+                    <artifactId>beans</artifactId>
                     <version>${project.version}</version>
                 </dependency>
             </dependencies>

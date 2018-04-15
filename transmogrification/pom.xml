@@ -13,7 +13,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>scoring</groupId>
+            <groupId>com.rap.battle</groupId>
             <artifactId>scoring</artifactId>
             <version>0.1.0-SNAPSHOT</version>
         </dependency>

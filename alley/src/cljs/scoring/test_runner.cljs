@@ -1,5 +1,5 @@
-(ns scoring.test-runner
-  (require [scoring.either :as either]
+(ns scoring.test_runner
+  (:require [scoring.either :as either]
            [scoring.scorer :as scorer]))
 
 (defn assertEquals [expected actual name]

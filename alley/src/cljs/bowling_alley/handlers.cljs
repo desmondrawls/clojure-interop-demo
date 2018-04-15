@@ -1,7 +1,7 @@
 (ns bowling-alley.handlers
   (:require [re-frame.core :as re-frame]
             [bowling-alley.db :as db]
-            [bowling-alley.scorer :as scorer]
+            [scoring.scorer :as scorer]
             [bowling-alley.remoting :as remote]))
 
 (enable-console-print!)
@@ -51,7 +51,7 @@
 (re-frame/register-handler
   :score-game
   (fn [db [_ rolls]]
-    (remote/score rolls)
+    (score-locally rolls)
     (-> db
       (assoc :loading? true)
       (assoc :error false))))

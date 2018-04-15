@@ -1,5 +1,5 @@
-(ns bowling-alley.scorer
-  (:require [bowling-alley.validator :as validator]
+(ns scoring.scorer
+  (:require [scoring.validator :as validator]
             [scoring.either :as either]))
 
 (defn score-from-frame
@@ -35,6 +35,11 @@
               (scoreSpare)
               (scoreBoring))))))))
 
+
 (defn score-game
   [rolls]
   (either/flatmap' (validator/validate-game rolls) score-from-frame))
+
+(defn -score_game
+  [rolls]
+  (score-game rolls))

@@ -13,10 +13,8 @@ open class MirrorsApplication {
 
     @Bean
     open fun bowlingController(gameSaver: GameSaver,
-                               scorer: ScoreGameUseCase,
                                gamesFetcher: GamesFetcher): BowlingController =
             BowlingController(fetchGamesUseCase(gamesFetcher),
-                    scorer,
                     gameSaver)
 
 }

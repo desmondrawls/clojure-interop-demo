@@ -193,7 +193,7 @@
         </dependency>
         <dependency>
             <groupId>com.rap.battle</groupId>
-            <artifactId>producer</artifactId>
+            <artifactId>bowling</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>

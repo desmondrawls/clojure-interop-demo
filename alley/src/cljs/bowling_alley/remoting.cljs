@@ -10,7 +10,7 @@
 
 (defn save [rolls name identifier]
   (ajax.core/POST
-    "http://localhost:8000/sink/games"
+    "http://localhost:8000/modulith/games"
     {:params {:rolls rolls :name name :identifier identifier}
      :format :json
      :headers {"Content-Type" "application/json"
@@ -20,23 +20,14 @@
 
 (defn fetch [rolls name]
   (ajax.core/GET
-    "http://localhost:8000/source/games"
+    "http://localhost:8000/modulith/games"
     {:format :json
      :handler #(re-frame/dispatch [:process-fetch-response %1])
      :error-handler #(re-frame/dispatch [:bad-response %1])}))
 
-(defn score [rolls]
-  (ajax.core/POST
-    (str "http://localhost:8000/modulith/score")
-    {:params {:rolls rolls}
-     :format :json
-     :headers {"Content-Type" "text/plain"}
-     :handler #(re-frame/dispatch [:process-scoring-result (response-to-result %1) rolls])
-     :error-handler #(re-frame/dispatch [:bad-response %1])}))
-
 (defn roll [rolls name identifier]
   (ajax.core/GET
-    (str "http://localhost:8000/transform/roll")
+    (str "http://localhost:8000/modulith/roll")
     {:params {:rolls (clojure.string/join "&rolls=" rolls)}
      :format :json
      :headers {"Content-Type" "application/json"}

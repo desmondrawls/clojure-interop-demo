@@ -27,6 +27,8 @@ dist/
 nbdist/
 .nb-gradle/
 
+alley/node_modules/
+
 reflection/resources/public/js/
 reflection/figwheel_server.log
 reflection/.sass-cache

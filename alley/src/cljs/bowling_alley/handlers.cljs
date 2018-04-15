@@ -51,7 +51,7 @@
 (re-frame/register-handler
   :score-game
   (fn [db [_ rolls]]
-    (score-locally rolls)
+    (remote/score rolls)
     (-> db
       (assoc :loading? true)
       (assoc :error false))))

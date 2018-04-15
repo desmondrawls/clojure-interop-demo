@@ -7,6 +7,7 @@ import java.util.*
 
 @RestController
 class BowlingController(val fetchGames: () -> Outcome<List<Game>, CommonErrors>,
+                        val scorer: Scorer,
                         val gameSaver: GameSaver) {
 
     @GetMapping("/modulith/games")
@@ -27,4 +28,13 @@ class BowlingController(val fetchGames: () -> Outcome<List<Game>, CommonErrors>,
     @ResponseBody
     fun new(@RequestParam rolls: List<Int>) =
             roll(rolls)
+
+    @PostMapping("/modulith/score")
+    @ResponseBody
+    fun score(@RequestBody inputStream: String): Outcome<Int, List<BowlingFailures>> {
+        val document: DocumentContext = JsonPath.parse(inputStream)
+        val rolls: List<Int> = document.read("$.rolls")
+        return scorer.score(rolls)
+    }
+
 }

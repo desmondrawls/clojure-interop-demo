@@ -3,7 +3,6 @@
             [re-frame.core :as re-frame]
             [bowling-alley.handlers]
             [bowling-alley.subs]
-            [scoring.test_runner]
             [bowling-alley.routes :as routes]
             [bowling-alley.views :as views]))
 

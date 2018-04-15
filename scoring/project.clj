@@ -9,4 +9,5 @@
   :plugins [[lein-exec "0.3.6"]]
   :main ^:skip-aot scoring.bowling.scorer
   :aot :all
+  :aliases {"test" ["exec" "-ep" "(use 'scoring.test_runner) (run-tests)"]}
   :profiles {:uberjar {:aot :all}})

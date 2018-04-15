@@ -25,6 +25,15 @@
      :handler #(re-frame/dispatch [:process-fetch-response %1])
      :error-handler #(re-frame/dispatch [:bad-response %1])}))
 
+(defn score [rolls]
+  (ajax.core/POST
+    (str "http://localhost:8000/modulith/score")
+    {:params {:rolls rolls}
+     :format :json
+     :headers {"Content-Type" "text/plain"}
+     :handler #(re-frame/dispatch [:process-scoring-result (response-to-result %1) rolls])
+     :error-handler #(re-frame/dispatch [:bad-response %1])}))
+
 (defn roll [rolls name identifier]
   (ajax.core/GET
     (str "http://localhost:8000/modulith/roll")

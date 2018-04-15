@@ -1,7 +1,6 @@
 (ns bowling-alley.handlers
   (:require [re-frame.core :as re-frame]
             [bowling-alley.db :as db]
-            [scoring.scorer :as scorer]
             [bowling-alley.remoting :as remote]))
 
 (enable-console-print!)
@@ -45,13 +44,10 @@
   (fn [db [_ timestamp rolls name submitted]]
     (-> db (assoc-in [:inputs timestamp] {:rolls rolls :name name :submitted submitted}))))
 
-(defn score-locally [rolls]
-  (re-frame/dispatch [:process-scoring-result (scorer/score-game rolls) rolls]))
-
 (re-frame/register-handler
   :score-game
   (fn [db [_ rolls]]
-    (score-locally rolls)
+    (remote/score rolls)
     (-> db
       (assoc :loading? true)
       (assoc :error false))))

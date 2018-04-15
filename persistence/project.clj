@@ -8,12 +8,12 @@
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [com.datomic/datomic-pro "0.9.5561.50"]
                  [com.amazonaws/aws-java-sdk-dynamodb "1.11.170"]
-                 [com.rap.battle/producer "0.0.1-SNAPSHOT"]]
+                 [com.rap.battle/bowling "0.0.1-SNAPSHOT"]]
   :plugins [[lein-exec "0.3.6"]]
-  :main ^:skip-aot recording_studio.tasks.migrate
+  :main ^:skip-aot persistence.tasks.migrate
   :aot :all
-  :aliases {"migrate" ["exec" "-ep" "(use 'recording_studio.tasks.migrate) (standalone-migrate)"]
-            "drop" ["exec" "-ep" "(use 'recording_studio.tasks.drop) (standalone-drop)"]
-            "test" ["exec" "-ep" "(use 'recording_studio.tasks.test_runner) (runTests)"]
-            "reset" ["exec" "-ep" "(use 'recording_studio.tasks.reset) (standalone-reset)"]}
+  :aliases {"migrate" ["exec" "-ep" "(use 'persistence.tasks.migrate) (standalone-migrate)"]
+            "drop" ["exec" "-ep" "(use 'persistence.tasks.drop) (standalone-drop)"]
+            "test" ["exec" "-ep" "(use 'persistence.tasks.test_runner) (runTests)"]
+            "reset" ["exec" "-ep" "(use 'persistence.tasks.reset) (standalone-reset)"]}
   :profiles {:uberjar {:aot :all}})

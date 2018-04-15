@@ -1,6 +1,5 @@
 (ns bowling-alley.views
   (:require [re-frame.core :as re-frame]
-            [bowling-alley.validator :as validator]
             [scoring.either :as either]
             [reagent.core :as reagent]))
 

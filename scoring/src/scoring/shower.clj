@@ -1,8 +1,7 @@
-(ns scoring.bowling.shower
+(ns scoring.shower
   (:gen-class :methods [^:static [scorer [] bowling.ScoreGameUseCase]])
-  (:require [clojure.data.json :as json]
-            [scoring.either :as either]
-            [scoring.bowling.scorer :as scorer])
+  (:require [scoring.either :as either]
+            [scoring.scorer :as scorer])
   (:import (bowling Failure Success BowlingFailures ScoreGameUseCase)))
 
 (def error-map

@@ -1,8 +1,8 @@
-(ns scoring.bowling.scorer
+(ns scoring.scorer
   (:gen-class :methods [^:static [score_game [Object] String]])
   (:use [clojure.core]
         :reload)
-  (require [scoring.bowling.validator :as validator]
+  (require [scoring.validator :as validator]
            [scoring.either :as either]))
 
 (defn score-from-frame

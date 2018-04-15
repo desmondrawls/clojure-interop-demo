@@ -1,31 +1,35 @@
-(ns scoring.bowling.test-runner
-  (require [scoring.assertions :as assertions]
-           [scoring.either :as either]
-           [scoring.bowling.scorer :as scorer]))
+(ns scoring.test-runner
+  (require [scoring.either :as either]
+           [scoring.scorer :as scorer]))
+
+(defn assertEquals [expected actual name]
+  (if (= expected actual)
+    (println "SUCCESS: " name)
+    (println "FAILED: " name "\n\texpected " actual " to equal " expected)))
 
 (defn present-scoring-outcome [game]
-  ((:fold (scorer/score-game game)) #(str "LEFT: " %) #(str "RIGHT: " %)))
+  (either/fold (scorer/score-game game) #(str "LEFT: " %) #(str "RIGHT: " %)))
 
 (defn negative-pins []
-    (assertions/assertEquals
+    (assertEquals
       "LEFT: [:INVALID_ROLL_NEGATIVE]"
       (present-scoring-outcome '(-1))
       "Negative pins"))
 
 (defn more-than-ten-pins-in-a-roll []
-    (assertions/assertEquals
+    (assertEquals
       "LEFT: [:INVALID_ROLL_TOO_HIGH]"
       (present-scoring-outcome '(11))
       "More than ten pins in a roll"))
 
 (defn more-than-ten-pins-in-a-frame []
-    (assertions/assertEquals
+    (assertEquals
       "LEFT: [:INVALID_FRAME_TOO_HIGH]"
       (present-scoring-outcome '(5 6))
       "More than ten pins in a frame"))
 
 (defn mixed-validity-rolls []
-    (assertions/assertEquals
+    (assertEquals
       true
       ((:fold (scorer/score-game '(9 -1 4 11 6)))
         #(and (contains? (set %) :INVALID_ROLL_NEGATIVE) (contains? (set %) :INVALID_ROLL_TOO_HIGH))
@@ -33,85 +37,85 @@
       "Mixed validity rolls"))
 
 (defn gutter-ball []
-    (assertions/assertEquals
+    (assertEquals
       "RIGHT: 0"
       (present-scoring-outcome '(0))
       "Gutter ball"))
 
 (defn mid-frame []
-    (assertions/assertEquals
+    (assertEquals
       "RIGHT: 3"
       (present-scoring-outcome '(1 2 3))
       "Mid-frame"))
 
 (defn mid-frame-after-a-strike []
-    (assertions/assertEquals
+    (assertEquals
       "RIGHT: 10"
       (present-scoring-outcome '(10 5))
       "Mid-frame after a strike"))
 
 (defn gutter-frame []
-    (assertions/assertEquals
+    (assertEquals
       "RIGHT: 0"
       (present-scoring-outcome (repeat 2 0))
       "Gutter frame"))
 
 (defn spare-frame []
-    (assertions/assertEquals
+    (assertEquals
       "RIGHT: 10"
       (present-scoring-outcome '(1 9))
       "Spare frame"))
 
 (defn strike-frame []
-    (assertions/assertEquals
+    (assertEquals
       "RIGHT: 10"
       (present-scoring-outcome '(10))
       "Strike frame"))
 
 (defn gutter-game []
-    (assertions/assertEquals
+    (assertEquals
       "RIGHT: 0"
       (present-scoring-outcome (repeat 20 0))
       "Gutter game"))
 
 (defn one-pin-game []
-    (assertions/assertEquals
+    (assertEquals
       "RIGHT: 1"
       (present-scoring-outcome (conj (repeat 19 0) 1))
       "One pin game"))
 
 (defn all-deuces-game []
-    (assertions/assertEquals
+    (assertEquals
       "RIGHT: 40"
       (present-scoring-outcome (repeat 20 2))
       "All deuces game"))
 
 (defn extra-rolls []
-    (assertions/assertEquals
+    (assertEquals
       "RIGHT: 40"
       (present-scoring-outcome (repeat 99 2))
       "Extra rolls"))
 
 (defn one-spare-game []
-    (assertions/assertEquals
+    (assertEquals
       "RIGHT: 20"
       (present-scoring-outcome (concat '(8, 2, 5) (repeat 17 0)))
       "One spare game"))
 
 (defn closing-spare-game []
-    (assertions/assertEquals
+    (assertEquals
       "RIGHT: 20"
       (present-scoring-outcome (concat (repeat 18 0) '(5 5 5)))
       "Closing spare game"))
 
 (defn one-strike-game []
-    (assertions/assertEquals
+    (assertEquals
       "RIGHT: 24"
       (present-scoring-outcome (concat '(10, 2, 5) (repeat 16 0)))
       "One strike game"))
 
 (defn perfect-game []
-    (assertions/assertEquals
+    (assertEquals
       "RIGHT: 300"
       (present-scoring-outcome (repeat 12 10))
       "Perfect game"))

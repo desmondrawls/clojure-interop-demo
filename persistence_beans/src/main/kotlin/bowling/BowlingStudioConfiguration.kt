@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration
 import recording_studio.bowling.fetcher
 import recording_studio.bowling.identifier
 import recording_studio.bowling.saver
-import scoring.bowling.shower
+import scoring.shower
 
 @Configuration
 class BowlingStudioConfiguration {

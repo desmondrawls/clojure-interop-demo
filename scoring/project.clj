@@ -8,6 +8,6 @@
                  [com.rap.battle/producer "0.0.1-SNAPSHOT"]]
   :plugins [[lein-exec "0.3.6"]]
   :main ^:skip-aot scoring.bowling.scorer
-  :aliases {"test" ["exec" "-ep" "(use 'scoring.test) (run-tests)"]}
+  :aliases {"test" ["exec" "-ep" "(use 'scoring.test-runner) (run-tests)"]}
   :aot :all
   :profiles {:uberjar {:aot :all}})

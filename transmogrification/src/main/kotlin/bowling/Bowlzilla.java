@@ -2,7 +2,7 @@ package bowling;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import scoring.bowling.shower;
+import scoring.shower;
 
 import java.util.List;
 import java.util.function.Function;

@@ -1,5 +1,0 @@
----
-applications:
-- name: bowling-transform
-  buildpack: https://github.com/cloudfoundry/java-buildpack.git
-  path: target/transform-0.0.1-SNAPSHOT.jar

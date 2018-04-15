@@ -32,7 +32,7 @@ You can test the config and unlock the gpg key with
 
 To start the transactor from the datomic home directory:
 
-    bin/transactor ensured-recording-studio.properties
+    bin/transactor ensured-persistence.properties
 
 ## Migrations
 
@@ -60,7 +60,7 @@ $ lein migrate
 
 Currently to make this work I am maintaining a pom.xml and a project.clj for the recording studio package.
 Sometimes Leiningen overwrites the pom.xml in which case packaging the jar with maven stops working.
-The indications that this happened are that the recording studio beans module cant resolve the recording_studio namespace.
+The indications that this happened are that the recording studio beans module cant resolve the persistence namespace.
 
 ### Clojure Links
 

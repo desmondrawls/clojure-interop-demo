@@ -92,3 +92,6 @@ transmogrification/pom.xml
     <version>0.1.0-SNAPSHOT</version>
 </dependency>
 ```
+riff 
+
+`riff create java --name bowlorama --input rolls --artifact target/transmogrification-0.0.1-SNAPSHOT-jar-with-dependencies.jar --handler bowling.Bowlorama -u nhcnessienyc --push --force`

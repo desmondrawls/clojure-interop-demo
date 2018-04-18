@@ -143,3 +143,8 @@ fun find(@PathVariable identifier: String) =
   (let [outcomes (map validate-game rolls)]
     (reduce either/add (either/Right []) outcomes)))
 ```
+
+### WebFlux
+
+[curl examples on slide 65](https://www.slideshare.net/makingx/introduction-to-spring-webflux-jsug-sfa1)
+

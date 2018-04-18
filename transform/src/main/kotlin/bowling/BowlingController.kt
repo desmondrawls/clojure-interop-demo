@@ -3,7 +3,8 @@ package bowling
 import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
 import org.springframework.web.bind.annotation.*
-import java.util.*
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 
 @RestController
 class BowlingController(val scorer: Scorer) {
@@ -15,10 +16,27 @@ class BowlingController(val scorer: Scorer) {
 
     @PostMapping("/transform/score")
     @ResponseBody
-    fun score(@RequestBody inputStream: String): Outcome<Int, List<BowlingFailures>> {
-        val document: DocumentContext = JsonPath.parse(inputStream)
-        val rolls: List<Int> = document.read("$.rolls")
-        return scorer.score(rolls)
+    fun score(@RequestBody games: Flux<String>): Flux<String> {
+        return games
+                .map(String::toUpperCase)
     }
+
+//    @PostMapping("/transform/score")
+//    @ResponseBody
+//    fun score(@RequestBody inputStream: String): Flux<Outcome<Int, List<BowlingFailures>>> {
+//        val document: DocumentContext = JsonPath.parse(inputStream)
+//        val games: List<List<Int>> = document.read("$.games")
+//        return Flux.fromIterable(games)
+//                .map(scorer::score)
+//    }
+
+//    @PostMapping("/transform/score")
+//    @ResponseBody
+//    fun score(@RequestBody inputStream: Mono<String>): Mono<Outcome<Int, List<BowlingFailures>>> {
+//        return inputStream
+//                .map(JsonPath::parse)
+//                .map({document -> document.read<List<Int>>("$.rolls")})
+//                .map({rolls -> scorer.score(rolls)})
+//    }
 
 }

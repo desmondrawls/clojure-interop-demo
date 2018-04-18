@@ -17,7 +17,7 @@
 
 (defn either-to-outcome
   [either]
-  (either/fold either #(Failure. (map export-error %)) #(Success. %)))
+  (either/fold either #(Failure. (map export-error %)) #(Success. (.intValue %))))
 
 (defn -scorer
   []

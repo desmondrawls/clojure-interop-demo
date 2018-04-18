@@ -7,4 +7,5 @@ spec:
   container:
     image: nhcnessienyc/practice-bowlorama:0.0.1
   input: rolls
+  idleTimeoutMs: 60000
   protocol: grpc

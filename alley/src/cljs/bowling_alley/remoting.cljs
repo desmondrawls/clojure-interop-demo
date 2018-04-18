@@ -8,6 +8,10 @@
         left (get (js->clj response) "errors")]
     (if right (either/Right right) (either/Left left))))
 
+(defn flux-response-to-result [response]
+  (println "GOT IT: " reponse)
+  (response-to-result (get response "data")))
+
 (defn save [rolls name identifier]
   (ajax.core/POST
     "http://localhost:8000/sink/games"
@@ -27,7 +31,7 @@
 
 (defn score [rolls]
   (ajax.core/POST
-    (str "http://localhost:8000/requests/score")
+    (str "http://localhost:8000/requests/flux")
     {:params {:rolls rolls}
      :format :json
      :headers {"Content-Type" "text/plain"}

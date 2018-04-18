@@ -2,7 +2,11 @@ package bowling
 
 import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
+import org.springframework.core.ParameterizedTypeReference
+import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.reactive.function.server.ServerRequest
+import org.springframework.web.reactive.function.server.ServerResponse
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
@@ -14,12 +18,11 @@ class BowlingController(val scorer: Scorer) {
     fun new(@RequestParam rolls: List<Int>) =
             roll(rolls)
 
-    @PostMapping("/transform/score")
+    @PostMapping("/transform/scores")
     @ResponseBody
-    fun score(@RequestBody games: Flux<String>): Flux<String> {
-        return games
-                .map(String::toUpperCase)
-    }
+    fun scores(@RequestBody games: Flux<Game>) =
+        games.map({game -> mapOf(game.rolls to scorer.score(game.rolls))})
+
 
 //    @PostMapping("/transform/score")
 //    @ResponseBody
@@ -30,13 +33,19 @@ class BowlingController(val scorer: Scorer) {
 //                .map(scorer::score)
 //    }
 
-//    @PostMapping("/transform/score")
-//    @ResponseBody
-//    fun score(@RequestBody inputStream: Mono<String>): Mono<Outcome<Int, List<BowlingFailures>>> {
-//        return inputStream
-//                .map(JsonPath::parse)
-//                .map({document -> document.read<List<Int>>("$.rolls")})
-//                .map({rolls -> scorer.score(rolls)})
-//    }
+    @PostMapping(path = arrayOf("/transform/score"),
+            consumes = arrayOf(MediaType.APPLICATION_JSON_VALUE),
+            produces = arrayOf(MediaType.APPLICATION_STREAM_JSON_VALUE))
+    @ResponseBody
+    fun score(@RequestBody inputStream: Mono<String>): Mono<Outcome<Int, List<BowlingFailures>>> {
+        return inputStream
+                .map(JsonPath::parse)
+                .map({document -> document.read<List<Int>>("$.rolls")})
+                .map({rolls -> scorer.score(rolls)})
+    }
+
+    fun scorify(req: ServerRequest) = ServerResponse.ok()
+            .contentType(MediaType.APPLICATION_STREAM_JSON)
+            .body(Flux.fromIterable(listOf("yo", "wassup")), String::class.java)
 
 }

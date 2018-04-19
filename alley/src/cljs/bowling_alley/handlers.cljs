@@ -8,22 +8,22 @@
 
 (defn boot-flow
   []
-  {:first-dispatch [:fetch-games]              ;; what event kicks things off ?
-   :rules [{:when :seen? :events :fetch-games  :dispatch [:wait-then-fetch]}]})
+  {:first-dispatch [:fetch-games]
+   :rules [{:when :seen? :events :fetch-games :dispatch [:wait-then-fetch]}]})
 
 (re-frame/reg-event-fx
   :wait-then-fetch
   (fn [_ [_ _]]
-  (.setTimeout
-    js/window
-    (fn []
-      (re-frame/dispatch [:refresh-games]))
+    (.setTimeout
+      js/window
+      (fn []
+        (re-frame/dispatch [:refresh-games]))
       5000)))
 
-(re-frame/reg-event-fx                    ;; note the -fx
-  :refresh-games                          ;; usage:  (dispatch [:boot])  See step 3
+(re-frame/reg-event-fx
+  :refresh-games
   (fn [_ [_ _]]
-    {:async-flow  (boot-flow games)}))
+    {:async-flow (boot-flow games)}))
 
 (defn normalize [games]
   (into {}

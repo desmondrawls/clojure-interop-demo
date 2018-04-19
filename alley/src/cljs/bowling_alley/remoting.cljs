@@ -32,15 +32,6 @@
      :handler #(re-frame/dispatch [:process-fetch-response %1])
      :error-handler #(re-frame/dispatch [:bad-response %1])}))
 
-;(defn scores [rolls]
-;  (ajax.core/POST
-;    (str "http://localhost:8000/transform/scores")
-;    {:params {:rolls rolls}
-;     :format :json
-;     :headers {"Content-Type" "application/json", "Accept" "text/event-stream"}
-;     :handler #(re-frame/dispatch [:process-scoring-result %1 rolls])
-;     :error-handler #(re-frame/dispatch [:bad-response %1])}))
-
 (defn score [rolls]
   (ajax.core/POST
     (str "http://localhost:8000/requests/strikes")

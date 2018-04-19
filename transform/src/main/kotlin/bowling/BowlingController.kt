@@ -2,15 +2,7 @@ package bowling
 
 import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
-import org.springframework.core.ParameterizedTypeReference
-import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.reactive.function.server.ServerRequest
-import org.springframework.web.reactive.function.server.ServerResponse
-import org.springframework.web.reactive.function.server.bodyToMono
-import reactor.core.publisher.Flux
-import reactor.core.publisher.Mono
-import reactor.util.function.Tuple2
 
 @RestController
 class BowlingController(val scorer: Scorer) {
@@ -20,40 +12,11 @@ class BowlingController(val scorer: Scorer) {
     fun new(@RequestParam rolls: List<Int>) =
             roll(rolls)
 
-    @PostMapping("/transform/scores")
+    @PostMapping("/transform/score")
     @ResponseBody
-    fun scores(@RequestBody games: Flux<Game>) =
-        games.map({game -> mapOf(game.rolls to scorer.score(game.rolls))})
-
-
-//    @PostMapping("/transform/score")
-//    @ResponseBody
-//    fun score(@RequestBody inputStream: String): Flux<Outcome<Int, List<BowlingFailures>>> {
-//        val document: DocumentContext = JsonPath.parse(inputStream)
-//        val games: List<List<Int>> = document.read("$.games")
-//        return Flux.fromIterable(games)
-//                .map(scorer::score)
-//    }
-
-    @PostMapping("/transform/fluxify")
-    @ResponseBody
-    fun fluxify(): Flux<Outcome<Int, List<BowlingFailures>>> {
-        return Flux.fromIterable(listOf(listOf(10,10,10,10), listOf()))
-                .map(scorer::score)
+    fun score(@RequestBody inputStream: String): Outcome<Int, List<BowlingFailures>> {
+        val document: DocumentContext = JsonPath.parse(inputStream)
+        val rolls: List<Int> = document.read("$.rolls")
+        return scorer.score(rolls)
     }
-
-    @PostMapping(path = arrayOf("/transform/score"),
-            consumes = arrayOf(MediaType.APPLICATION_JSON_VALUE),
-            produces = arrayOf(MediaType.APPLICATION_STREAM_JSON_VALUE))
-    @ResponseBody
-    fun score(@RequestBody inputStream: Mono<String>): Mono<Outcome<Int, List<BowlingFailures>>> {
-        return inputStream
-                .map(JsonPath::parse)
-                .map({document -> document.read<List<Int>>("$.rolls")})
-                .map({rolls -> scorer.score(rolls)})
-    }
-
-    fun scorify(req: ServerRequest) = ServerResponse.ok()
-            .contentType(MediaType.APPLICATION_STREAM_JSON)
-            .body(req.bodyToFlux(String::class.java).zipWithIterable(listOf("yo", "wassup")), ParameterizedTypeReference.forType(Tuple2::class.java))
 }

@@ -1,17 +1,15 @@
 package bowling;
 
-import com.jayway.jsonpath.DocumentContext;
-import com.jayway.jsonpath.JsonPath;
+import reactor.core.publisher.Flux;
 import scoring.shower;
 
 import java.util.List;
 import java.util.function.Function;
 
-public class Bowlorama implements Function<String, Outcome<Integer, List<BowlingFailures>>> {
+public class Bowlorama implements Function<Flux<Game>, Flux<Outcome<Integer, List<BowlingFailures>>>> {
 
-    public Outcome<Integer, List<BowlingFailures>> apply(String body) {
-        DocumentContext documentContext = JsonPath.parse(body);
-        List<Integer> rolls = documentContext.read("$.rolls[*]");
-        return shower.scorer().score(rolls);
+    public Flux<Outcome<Integer, List<BowlingFailures>>> apply(Flux<Game> next) {
+        Scorer scorer = shower.scorer();
+        return next.map(game -> scorer.score(game.getRolls()));
     }
 }

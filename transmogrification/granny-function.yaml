@@ -2,9 +2,10 @@
 apiVersion: projectriff.io/v1alpha1
 kind: Function
 metadata:
-  name: practice-bowlorama
+  name: granny
 spec:
   container:
-    image: nhcnessienyc/practice-bowlorama:0.0.1
-  input: rolls
+    image: nhcnessienyc/granny:v0002
+    imagePullPolicy: Always
+  input: strikes
   protocol: grpc

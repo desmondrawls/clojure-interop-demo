@@ -1,0 +1,10 @@
+---
+apiVersion: projectriff.io/v1alpha1
+kind: Function
+metadata:
+  name: topanga
+spec:
+  container:
+    image: nhcnessienyc/topanga:0.0.1
+  input: hiking
+  protocol: grpc

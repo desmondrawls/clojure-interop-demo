@@ -23,7 +23,7 @@ open class MirrorsApplication {
 
     @Bean
     fun router(bowlingController: BowlingController) = router {
-        GET("/flux").nest {
+        POST("/flux").nest {
             accept(APPLICATION_STREAM_JSON, bowlingController::scorify)
         }
     }

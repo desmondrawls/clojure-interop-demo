@@ -1,9 +1,32 @@
 (ns bowling-alley.handlers
   (:require [re-frame.core :as re-frame]
             [bowling-alley.db :as db]
+            [day8.re-frame.async-flow-fx]
             [bowling-alley.remoting :as remote]))
 
 (enable-console-print!)
+
+(defn boot-flow
+  [games]
+  {:first-dispatch [:score-games games]              ;; what event kicks things off ?
+   :rules [                             ;; a set of rules describing the required flow
+           {:when :seen? :events :data  :dispatch [:process-scoring-result]}]})
+
+(re-frame/reg-event-db
+  :score-games
+  (fn [db [_ games]]
+    (print "GAMES: " games)
+    (remote/scores games)
+    (-> db
+      (assoc :loading? true)
+      (assoc :error false))))
+
+(re-frame/reg-event-fx                    ;; note the -fx
+  :batch-score-games                          ;; usage:  (dispatch [:boot])  See step 3
+  (fn [_ [_ games]]
+    {:db (-> {}                  ;;  do whatever synchronous work needs to be done
+           (assoc :loading? true))
+     :async-flow  (boot-flow games)}))
 
 (defn normalize [games]
   (into {}
@@ -11,17 +34,17 @@
       (let [key-game (clojure.walk/keywordize-keys game)]
         [(:identifier key-game) key-game]))))
 
-(re-frame/register-handler
+(re-frame/reg-event-db
   :initialize-db
   (fn [_ _]
     db/default-db))
 
-(re-frame/register-handler
+(re-frame/reg-event-db
   :set-active-panel
   (fn [db [_ active-panel]]
     (assoc db :active-panel active-panel)))
 
-(re-frame/register-handler
+(re-frame/reg-event-db
   :save-game
   (fn [db [_ rolls name identifier]]
     (remote/save rolls name identifier)
@@ -29,37 +52,40 @@
       (assoc :loading? true)
       (assoc :error false))))
 
-(re-frame/register-handler
+(re-frame/reg-event-db
   :identify-game
   (fn [db [_ local-identifier global-identifier]]
     (-> db (assoc-in [:games local-identifier :identifier] global-identifier))))
 
-(re-frame/register-handler
+(re-frame/reg-event-db
   :stop-loading
   (fn [db [_]]
     (-> db (assoc :loading? false))))
 
-(re-frame/register-handler
+(re-frame/reg-event-db
   :set-inputs
   (fn [db [_ timestamp rolls name submitted]]
     (-> db (assoc-in [:inputs timestamp] {:rolls rolls :name name :submitted submitted}))))
 
-(re-frame/register-handler
+(re-frame/reg-event-db
   :score-game
   (fn [db [_ rolls]]
+    (print "SCORING: " rolls)
     (remote/score rolls)
     (-> db
       (assoc :loading? true)
       (assoc :error false))))
 
-(re-frame/register-handler
+(re-frame/reg-event-db
   :process-scoring-result
-  (fn [db [_ result rolls]]
-    (-> db
-      (assoc :loading? false)
-      (assoc-in [:scores rolls] result))))
+  (fn [db [_ response rolls]]
+    (let [results (remote/response-to-result response)]
+      (print "RESULTS: " results)
+      (-> db
+        (assoc :loading? false)
+        (assoc-in [:scores] results)))))
 
-(re-frame/register-handler
+(re-frame/reg-event-db
   :roll
   (fn [db [_ rolls name identifier]]
     (remote/roll rolls name identifier)
@@ -67,7 +93,7 @@
       (assoc :loading? true)
       (assoc :error false))))
 
-(re-frame/register-handler
+(re-frame/reg-event-db
   :process-rolling-response
   (fn [db [_ response identifier name]]
     (let [rolls (get (js->clj response) "value")]
@@ -76,7 +102,7 @@
         (assoc :loading? false)
         (assoc-in [:games identifier] {:rolls rolls :name name})))))
 
-(re-frame/register-handler
+(re-frame/reg-event-db
   :fetch-games
   (fn [db [_ rolls name]]
     (remote/fetch rolls name)
@@ -87,20 +113,19 @@
 (defn score-games
   [games]
   (doseq [game games]
-    (let [rolls (:rolls (second game))
-          identifier (first game)]
-      (re-frame/dispatch [:score-game rolls identifier]))))
+    (let [rolls (:rolls (second game))]
+      (re-frame/dispatch [:score-game rolls]))))
 
-(re-frame/register-handler
+(re-frame/reg-event-db
   :process-fetch-response
   (fn [db [_ response]]
     (let [games (normalize (get (js->clj response) "value"))]
-      (score-games games)
+      (re-frame/dispatch [:batch-score-games games])
       (-> db
         (assoc :loading? false)
         (assoc-in [:games] games)))))
 
-(re-frame/register-handler
+(re-frame/reg-event-db
   :bad-response
   (fn [db [_ _]]
     (-> db

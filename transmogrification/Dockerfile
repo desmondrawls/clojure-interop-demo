@@ -1,4 +1,4 @@
-FROM projectriff/java-function-invoker:0.0.5-sr.1
+FROM projectriff/java-function-invoker:0.0.6
 ARG FUNCTION_JAR=/functions/transmogrification-0.0.1-SNAPSHOT-jar-with-dependencies.jar
 ARG FUNCTION_HANDLER=bowling.Bowlorama
 ADD target/transmogrification-0.0.1-SNAPSHOT-jar-with-dependencies.jar $FUNCTION_JAR

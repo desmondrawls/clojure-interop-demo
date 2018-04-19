@@ -2,9 +2,11 @@
 apiVersion: projectriff.io/v1alpha1
 kind: Function
 metadata:
-  name: flux-bowlorama
+  name: capacitor
 spec:
   container:
-    image: nhcnessienyc/flux-bowlorama:0.0.1
+    image: nhcnessienyc/capacitor:v0005
+    imagePullPolicy: Always
   input: flux
+  idleTimeoutMs: 30000
   protocol: grpc

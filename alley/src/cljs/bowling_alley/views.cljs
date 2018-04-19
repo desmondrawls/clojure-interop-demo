@@ -131,8 +131,11 @@
     (let [games (re-frame/subscribe [:games])
           inputs (re-frame/subscribe [:inputs])
           scores (re-frame/subscribe [:scores])]
+      [:div
+       [:div (str @scores)]
+       [:div (str "THIS: " (get @scores "[3, 2]"))]
       [:ul.flex-container
-       (map (partial game @scores) (sorted-games @inputs @scores @games))])))
+       (map (partial game @scores) (sorted-games @inputs @scores @games))]])))
 
 (defn navbar
   []

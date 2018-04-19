@@ -3,10 +3,24 @@
             [ajax.core :refer [GET POST]]
             [scoring.either :as either]))
 
-(defn response-to-result [response]
-  (let [right (get (js->clj response) "value")
-        left (get (js->clj response) "errors")]
+(defn map-values [m f]
+  (into {} (for [[k v] m] [k (f v)])))
+
+(defn to-either [result]
+  (let [right (get result "value")
+        left (get result "errors")]
     (if right (either/Right right) (either/Left left))))
+
+(defn response-to-result [response]
+  (let [payload (last (clojure.string/split response #"data:"))
+        parsed (js->clj payload)]
+    (print "SHIT: " response)
+    (print "SHIT: " parsed)
+    (print "wtf: " (cljs.reader/read-string "[3, 2]"))
+    (print "SHITTIER: " (cljs.reader/read-string (first (keys parsed))))
+    (print "FUCK: " (map js->clj (js->clj payload)))
+    (map-values parsed to-either)))
+
 
 (defn flux-response-to-result [response]
   (println "GOT IT: " reponse)
@@ -29,13 +43,22 @@
      :handler #(re-frame/dispatch [:process-fetch-response %1])
      :error-handler #(re-frame/dispatch [:bad-response %1])}))
 
+;(defn scores [rolls]
+;  (ajax.core/POST
+;    (str "http://localhost:8000/transform/scores")
+;    {:params {:rolls rolls}
+;     :format :json
+;     :headers {"Content-Type" "application/json", "Accept" "text/event-stream"}
+;     :handler #(re-frame/dispatch [:process-scoring-result %1 rolls])
+;     :error-handler #(re-frame/dispatch [:bad-response %1])}))
+
 (defn score [rolls]
   (ajax.core/POST
-    (str "http://localhost:8000/requests/flux")
+    (str "http://localhost:8000/transform/scores")
     {:params {:rolls rolls}
      :format :json
-     :headers {"Content-Type" "text/plain"}
-     :handler #(re-frame/dispatch [:process-scoring-result (response-to-result %1) rolls])
+     :headers {"Content-Type" "application/json", "Accept" "text/event-stream"}
+     :handler #(re-frame/dispatch [:process-scoring-result %1 rolls])
      :error-handler #(re-frame/dispatch [:bad-response %1])}))
 
 (defn roll [rolls name identifier]

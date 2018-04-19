@@ -6,14 +6,7 @@
 (defn response->result [response]
   (let [right (get (js->clj response) "value")
         left (get (js->clj response) "errors")]
-    (print "PARSED: " response)
-    (print "PARSED: " parsed)
-    (print "RIGHT: " right)
     (if right (either/Right right) (either/Left left))))
-
-(defn flux-response-to-result [response]
-  (println "GOT IT: " reponse)
-  (response-to-result (get response "data")))
 
 (defn save [rolls name identifier]
   (ajax.core/POST

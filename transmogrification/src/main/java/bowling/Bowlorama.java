@@ -1,11 +1,8 @@
 package bowling;
 
-import com.jayway.jsonpath.DocumentContext;
-import com.jayway.jsonpath.JsonPath;
 import reactor.core.publisher.Flux;
 import scoring.shower;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 

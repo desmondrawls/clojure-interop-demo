@@ -9,15 +9,13 @@
 (defn boot-flow
   []
   {:first-dispatch [:fetch-games]
-   :rules [{:when :seen? :events :fetch-games :dispatch [:wait-then-fetch]}]})
+   :rules [{:when :seen? :events :fetch-games :dispatch [:refresh-with-delay]}]})
 
 (re-frame/reg-event-fx
-  :wait-then-fetch
+  :refresh-with-delay
   (fn [_ [_ _]]
-    (.setTimeout
-      js/window
-      (fn []
-        (re-frame/dispatch [:refresh-games]))
+    (.setTimeout js/window
+      (fn [] (re-frame/dispatch [:refresh-games]))
       5000)))
 
 (re-frame/reg-event-fx
@@ -67,7 +65,6 @@
 (re-frame/reg-event-db
   :score-game
   (fn [db [_ rolls]]
-    (print "SCORING: " rolls)
     (remote/score rolls)
     (-> db
       (assoc :loading? true)
@@ -108,18 +105,14 @@
 
 (defn score-games
   [games]
-  (print "score games")
   (doseq [game games]
     (let [rolls (:rolls (second game))]
-      (print "ROLLS: " rolls)
       (re-frame/dispatch [:score-game rolls]))))
 
 (re-frame/reg-event-db
   :process-fetch-response
   (fn [db [_ response]]
     (let [games (normalize (get (js->clj response) "value"))]
-      (print "fetched!")
-      (print games)
       (score-games games)
       (-> db
         (assoc :loading? false)

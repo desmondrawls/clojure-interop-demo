@@ -3,9 +3,12 @@
             [ajax.core :refer [GET POST]]
             [scoring.either :as either]))
 
-(defn response-to-result [response]
+(defn response->result [response]
   (let [right (get (js->clj response) "value")
         left (get (js->clj response) "errors")]
+    (print "PARSED: " response)
+    (print "PARSED: " parsed)
+    (print "RIGHT: " right)
     (if right (either/Right right) (either/Left left))))
 
 (defn flux-response-to-result [response]
@@ -22,20 +25,29 @@
      :handler #(re-frame/dispatch [:stop-loading])
      :error-handler #(re-frame/dispatch [:bad-response %1])}))
 
-(defn fetch [rolls name]
+(defn fetch []
   (ajax.core/GET
     "http://localhost:8000/source/games"
     {:format :json
      :handler #(re-frame/dispatch [:process-fetch-response %1])
      :error-handler #(re-frame/dispatch [:bad-response %1])}))
 
+;(defn scores [rolls]
+;  (ajax.core/POST
+;    (str "http://localhost:8000/transform/scores")
+;    {:params {:rolls rolls}
+;     :format :json
+;     :headers {"Content-Type" "application/json", "Accept" "text/event-stream"}
+;     :handler #(re-frame/dispatch [:process-scoring-result %1 rolls])
+;     :error-handler #(re-frame/dispatch [:bad-response %1])}))
+
 (defn score [rolls]
   (ajax.core/POST
-    (str "http://localhost:8000/requests/flux")
+    (str "http://localhost:8000/requests/strikes")
     {:params {:rolls rolls}
      :format :json
-     :headers {"Content-Type" "text/plain"}
-     :handler #(re-frame/dispatch [:process-scoring-result (response-to-result %1) rolls])
+     :headers {"Content-Type" "application/json"}
+     :handler #(re-frame/dispatch [:process-scoring-result %1 rolls])
      :error-handler #(re-frame/dispatch [:bad-response %1])}))
 
 (defn roll [rolls name identifier]

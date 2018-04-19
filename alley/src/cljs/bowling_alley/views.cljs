@@ -136,7 +136,7 @@
 
 (defn navbar
   []
-  (let [on-click (fn [_] (re-frame/dispatch [:fetch-games]))]
+  (let [on-click (fn [_] (re-frame/dispatch [:refresh-games]))]
     (fn []
       [:nav.navbar.mbn.disco-nav
        [:div.container-fluid]

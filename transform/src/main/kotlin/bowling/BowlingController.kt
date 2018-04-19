@@ -7,8 +7,10 @@ import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
+import org.springframework.web.reactive.function.server.bodyToMono
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import reactor.util.function.Tuple2
 
 @RestController
 class BowlingController(val scorer: Scorer) {
@@ -33,6 +35,13 @@ class BowlingController(val scorer: Scorer) {
 //                .map(scorer::score)
 //    }
 
+    @PostMapping("/transform/fluxify")
+    @ResponseBody
+    fun fluxify(): Flux<Outcome<Int, List<BowlingFailures>>> {
+        return Flux.fromIterable(listOf(listOf(10,10,10,10), listOf()))
+                .map(scorer::score)
+    }
+
     @PostMapping(path = arrayOf("/transform/score"),
             consumes = arrayOf(MediaType.APPLICATION_JSON_VALUE),
             produces = arrayOf(MediaType.APPLICATION_STREAM_JSON_VALUE))
@@ -46,6 +55,5 @@ class BowlingController(val scorer: Scorer) {
 
     fun scorify(req: ServerRequest) = ServerResponse.ok()
             .contentType(MediaType.APPLICATION_STREAM_JSON)
-            .body(Flux.fromIterable(listOf("yo", "wassup")), String::class.java)
-
+            .body(req.bodyToFlux(String::class.java).zipWithIterable(listOf("yo", "wassup")), ParameterizedTypeReference.forType(Tuple2::class.java))
 }

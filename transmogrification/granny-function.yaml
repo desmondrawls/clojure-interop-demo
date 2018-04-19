@@ -2,9 +2,10 @@
 apiVersion: projectriff.io/v1alpha1
 kind: Function
 metadata:
-  name: flux-bowlorama
+  name: granny
 spec:
   container:
-    image: nhcnessienyc/flux-bowlorama:0.0.1
-  input: flux
+    image: nhcnessienyc/granny:v0002
+    imagePullPolicy: Always
+  input: strikes
   protocol: grpc

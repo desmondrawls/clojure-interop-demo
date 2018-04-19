@@ -1,5 +1,7 @@
 (ns scoring.shower
   (:gen-class :methods [^:static [scorer [] bowling.Scorer]])
+  (:use [clojure.core]
+        :reload)
   (require [scoring.either :as either]
            [scoring.scorer :as scorer])
   (:import (bowling Failure Success BowlingFailures Scorer)))

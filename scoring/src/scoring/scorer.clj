@@ -1,5 +1,5 @@
 (ns scoring.scorer
-  (:require [scoring.validator :as validator]
+  (require [scoring.validator :as validator]
             [scoring.either :as either]))
 
 (defn score-from-frame
@@ -40,6 +40,6 @@
   [rolls]
   (either/flatmap' (validator/validate-game rolls) score-from-frame))
 
-(defn -score_game
+(defn -score
   [rolls]
   (score-game rolls))

@@ -4,7 +4,7 @@
         :reload)
   (require [persistence.db.connection :as connection]
            [datomic.api :as d])
-  (:import (bowling Game GameIdentifier Success Failure CommonErrors)))
+  (:import (bowling Game GameIdentifier Success Failure SpacetimeErrors)))
 
 (def by-identifier '[:find ?pins ?frame-index ?name
                      :in $ ?identifier
@@ -31,4 +31,4 @@
             (as-> sorted_rolls (map #(.intValue %) sorted_rolls))
             (Game. (last (first game)) identifier)
             Success.)
-          (Failure. '(CommonErrors/DEAD_END)))))))
+          (Failure. '(SpacetimeErrors/DEAD_END)))))))

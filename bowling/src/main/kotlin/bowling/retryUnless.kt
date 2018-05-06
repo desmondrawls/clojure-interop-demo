@@ -1,13 +1,13 @@
 package bowling
 
-fun <Value> retryUnless(task: () -> Outcome<Value, CommonErrors>, showStopper: CommonErrors, retries: Int): Outcome<Value, CommonErrors> {
-    fun attempt(retry: Int): Outcome<Value, CommonErrors> {
+fun <Value> retryUnless(task: () -> Outcome<Value, SpacetimeErrors>, showStopper: SpacetimeErrors, retries: Int): Outcome<Value, SpacetimeErrors> {
+    fun attempt(retry: Int): Outcome<Value, SpacetimeErrors> {
         return task().fold(
-                { value -> Success<Value, CommonErrors>(value) },
+                { value -> Success<Value, SpacetimeErrors>(value) },
                 { errors ->
                     when {
-                        retry > retries -> Failure<Value, CommonErrors>(errors)
-                        errors.contains(showStopper) -> Failure<Value, CommonErrors>(errors)
+                        retry > retries -> Failure<Value, SpacetimeErrors>(errors)
+                        errors.contains(showStopper) -> Failure<Value, SpacetimeErrors>(errors)
                         else -> attempt(retry + 1)
                     }
                 })

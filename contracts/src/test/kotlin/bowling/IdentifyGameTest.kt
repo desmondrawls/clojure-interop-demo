@@ -32,7 +32,7 @@ class IdentifyGameTest {
 
         val outcome = (identifyGameUseCase(failingGameIdentifier))(stubIdentifier())
 
-        val expectedFailure: Outcome<Game, CommonErrors> = Failure(listOf(CommonErrors.BAD_TIMING))
+        val expectedFailure: Outcome<Game, SpacetimeErrors> = Failure(listOf(SpacetimeErrors.BAD_TIMING))
         assert.that(outcome, equalTo(expectedFailure))
     }
 }

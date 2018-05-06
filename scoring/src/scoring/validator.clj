@@ -1,11 +1,12 @@
 (ns scoring.validator
-  (:require [scoring.either :as either]))
+  (require [scoring.either :as either])
+  (:import (bowling BowlingFailures)))
 
 (defn validate-roll [pins]
   (if (< pins 0)
-    (either/Left [:INVALID_ROLL_NEGATIVE])
+    (either/Left ["INVALID_ROLL_NEGATIVE"])
     (if (> pins 10)
-      (either/Left [:INVALID_ROLL_TOO_HIGH])
+      (either/Left ["INVALID_ROLL_TOO_HIGH"])
       (either/Right [pins]))))
 
 (defn validate-rolls [rolls]
@@ -22,7 +23,7 @@
                               (map #(reduce + %))
                               (some #(> % 10)))]
     (if some-frame-too-high
-      (either/Left [:INVALID_FRAME_TOO_HIGH])
+      (either/Left ["INVALID_FRAME_TOO_HIGH"])
       (either/Right rolls))))
 
 (defn validate-game [rolls]

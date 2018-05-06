@@ -12,10 +12,8 @@ import org.springframework.context.annotation.ComponentScan
 open class MirrorsApplication {
 
     @Bean
-    open fun bowlingController(gameSaver: GameSaver,
-                               gamesFetcher: GamesFetcher): BowlingController =
-            BowlingController(fetchGamesUseCase(gamesFetcher),
-                    gameSaver)
+    open fun bowlingController(scorer: Scorer): BowlingController =
+            BowlingController(scorer)
 
 }
 

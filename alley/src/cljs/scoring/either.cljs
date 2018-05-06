@@ -19,15 +19,15 @@
   (fold either (fn [_] false) (fn [_] true)))
 
 (defn Left [value]
-  {:map (fn [transform]
+  {:map (fn [_]
           (Left value))
-   :flatmap (fn [transform]
+   :flatmap (fn [_]
               (Left value))
    :concat (fn [either]
              (fold either
                (fn [other] (Left (concat value other)))
                (fn [_] (Left value))))
-   :fold (fn [transformLeft, transformRight]
+   :fold (fn [transformLeft, _]
            (transformLeft value))})
 
 (defn Right [value]
@@ -39,5 +39,5 @@
              (fold either
                (fn [other] (Left other))
                (fn [other] (Right (concat value other)))))
-   :fold (fn [transformLeft, transformRight]
+   :fold (fn [_, transformRight]
            (transformRight value))})

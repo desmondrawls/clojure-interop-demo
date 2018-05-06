@@ -4,7 +4,7 @@
         :reload)
   (require [persistence.db.connection :as connection]
            [datomic.api :as d])
-  (:import (bowling Game GamesFetcher Success Failure CommonErrors)))
+  (:import (bowling Game GamesFetcher Success Failure SpacetimeErrors)))
 
 (def query '[:find ?pins ?frame-index ?name ?identifier
                      :in $
@@ -34,7 +34,7 @@
   (let [games (fetch-games db)]
     (if (not-empty games)
       (Success. (map gamify (group-by last games)))
-      (Failure. '(CommonErrors/DEAD_END)))))
+      (Failure. '(SpacetimeErrors/DEAD_END)))))
 
 (defn -games_fetcher
   []

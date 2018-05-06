@@ -1,5 +1,5 @@
 (ns scoring.test_runner
-  (:require [scoring.either :as either]
+  (require [scoring.either :as either]
            [scoring.scorer :as scorer]))
 
 (defn assertEquals [expected actual name]
@@ -12,19 +12,19 @@
 
 (defn negative-pins []
     (assertEquals
-      "LEFT: [:INVALID_ROLL_NEGATIVE]"
+      "LEFT: [\"INVALID_ROLL_NEGATIVE\"]"
       (present-scoring-outcome '(-1))
       "Negative pins"))
 
 (defn more-than-ten-pins-in-a-roll []
     (assertEquals
-      "LEFT: [:INVALID_ROLL_TOO_HIGH]"
+      "LEFT: [\"INVALID_ROLL_TOO_HIGH\"]"
       (present-scoring-outcome '(11))
       "More than ten pins in a roll"))
 
 (defn more-than-ten-pins-in-a-frame []
     (assertEquals
-      "LEFT: [:INVALID_FRAME_TOO_HIGH]"
+      "LEFT: [\"INVALID_FRAME_TOO_HIGH\"]"
       (present-scoring-outcome '(5 6))
       "More than ten pins in a frame"))
 
@@ -32,7 +32,9 @@
     (assertEquals
       true
       ((:fold (scorer/score-game '(9 -1 4 11 6)))
-        #(and (contains? (set %) :INVALID_ROLL_NEGATIVE) (contains? (set %) :INVALID_ROLL_TOO_HIGH))
+        #(and
+           (contains? (set %) "INVALID_ROLL_NEGATIVE")
+           (contains? (set %) "INVALID_ROLL_TOO_HIGH"))
         false)
       "Mixed validity rolls"))
 

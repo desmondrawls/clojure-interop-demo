@@ -1,17 +1,40 @@
 (ns bowling-alley.handlers
   (:require [re-frame.core :as re-frame]
             [bowling-alley.db :as db]
-            [scoring.scorer :as scorer]
+            [scoring.either :as either]
             [day8.re-frame.async-flow-fx]
             [bowling-alley.remoting :as remote]))
 
 (enable-console-print!)
 
+(defn boot-flow
+  []
+  {:first-dispatch [:fetch-games]
+   :rules [{:when :seen? :events :fetch-games :dispatch [:refresh-with-delay]}]})
+
+(re-frame/reg-event-fx
+  :refresh-with-delay
+  (fn [_ [_ _]]
+    (.setTimeout js/window
+      (fn [] (re-frame/dispatch [:refresh-games]))
+      5000)))
+
+(re-frame/reg-event-fx
+  :refresh-games
+  (fn [_ [_ _]]
+    {:async-flow (boot-flow)}))
+
+(defn response->result [response]
+  (let [right (:value response)
+        left (:errors response)]
+    (if right (either/Right right) (either/Left left))))
+
 (defn normalize [games]
   (into {}
     (for [game games]
-      (let [key-game (clojure.walk/keywordize-keys game)]
-        [(:identifier key-game) key-game]))))
+      (let [key-scored-game (clojure.walk/keywordize-keys game)
+            key-game (:game key-scored-game)]
+        [(:identifier key-game) key-scored-game]))))
 
 (re-frame/reg-event-db
   :initialize-db
@@ -46,13 +69,10 @@
   (fn [db [_ timestamp rolls name submitted]]
     (-> db (assoc-in [:inputs timestamp] {:rolls rolls :name name :submitted submitted}))))
 
-(defn score-locally [rolls]
-  (re-frame/dispatch [:process-scoring-result (scorer/score-game rolls) rolls]))
-
 (re-frame/reg-event-db
   :score-game
   (fn [db [_ rolls]]
-    (score-locally rolls)
+    (remote/score rolls)
     (-> db
       (assoc :loading? true)
       (assoc :error false))))
@@ -92,14 +112,22 @@
 (defn score-games
   [games]
   (doseq [game games]
-    (let [rolls (:rolls (second game))]
-      (re-frame/dispatch [:score-game rolls]))))
+    (let [rolls (:rolls (:game (second game)))
+          score (:score (second game))
+          result (response->result score)]
+      (print "SCORE: " score)
+      (print "RESULT: " result)
+      (re-frame/dispatch [:process-scoring-result result rolls]))))
+
+(defn map-values [m f]
+  (into {} (for [[k v] m] [k (f v)])))
 
 (re-frame/reg-event-db
   :process-fetch-response
   (fn [db [_ response]]
-    (let [games (normalize (get (js->clj response) "value"))]
-      (score-games games)
+    (let [scored-games (normalize (get (js->clj response) "value"))
+          games (map-values scored-games :game)]
+      (score-games scored-games)
       (-> db
         (assoc :loading? false)
         (assoc-in [:games] (merge games (:games db)))))))

@@ -13,7 +13,10 @@
         <module>beans</module>
         <module>transmogrification</module>
         <module>scoring</module>
-        <module>modulith</module>
+        <module>scoring_beans</module>
+        <module>source</module>
+        <module>transform</module>
+        <module>sink</module>
         <module>contracts</module>
     </modules>
     <packaging>pom</packaging>

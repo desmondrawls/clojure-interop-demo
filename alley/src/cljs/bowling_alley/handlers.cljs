@@ -2,6 +2,7 @@
   (:require [re-frame.core :as re-frame]
             [bowling-alley.db :as db]
             [scoring.either :as either]
+            [scoring.scorer :as scorer]
             [day8.re-frame.async-flow-fx]
             [bowling-alley.remoting :as remote]))
 
@@ -69,10 +70,13 @@
   (fn [db [_ timestamp rolls name submitted]]
     (-> db (assoc-in [:inputs timestamp] {:rolls rolls :name name :submitted submitted}))))
 
+(defn score-locally [rolls]
+  (re-frame/dispatch [:process-scoring-result (scorer/score-game rolls) rolls]))
+
 (re-frame/reg-event-db
   :score-game
   (fn [db [_ rolls]]
-    (remote/score rolls)
+    (score-locally rolls)
     (-> db
       (assoc :loading? true)
       (assoc :error false))))
@@ -115,8 +119,6 @@
     (let [rolls (:rolls (:game (second game)))
           score (:score (second game))
           result (response->result score)]
-      (print "SCORE: " score)
-      (print "RESULT: " result)
       (re-frame/dispatch [:process-scoring-result result rolls]))))
 
 (defn map-values [m f]

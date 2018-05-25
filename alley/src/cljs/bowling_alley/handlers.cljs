@@ -73,10 +73,20 @@
 (defn score-locally [rolls]
   (re-frame/dispatch [:process-scoring-result (scorer/score-game rolls) rolls]))
 
+(defn round-robin-score [rolls]
+  (let [selector (mod (rand-int 10) 3)]
+    (print "SELECTOR")
+    (print selector)
+    (if (= selector 0)
+      (score-locally rolls)
+      (if (= selector 1)
+        (remote/score rolls)
+        (remote/fancy-score rolls)))))
+
 (re-frame/reg-event-db
   :score-game
   (fn [db [_ rolls]]
-    (score-locally rolls)
+    (round-robin-score rolls)
     (-> db
       (assoc :loading? true)
       (assoc :error false))))

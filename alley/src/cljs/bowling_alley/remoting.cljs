@@ -34,6 +34,15 @@
      :handler #(re-frame/dispatch [:process-scoring-result (response->result %1) rolls])
      :error-handler #(re-frame/dispatch [:bad-response %1])}))
 
+(defn fancy-score [rolls]
+  (ajax.core/POST
+    (str "http://localhost:8000/requests/scores")
+    {:params {:rolls rolls}
+     :format :json
+     :headers {"Content-Type" "application/json"}
+     :handler #(re-frame/dispatch [:process-scoring-result (response->result %1) rolls])
+     :error-handler #(re-frame/dispatch [:bad-response %1])}))
+
 (defn roll [rolls name identifier]
   (ajax.core/GET
     (str "http://localhost:8000/transform/roll")
